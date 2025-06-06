@@ -1,0 +1,15 @@
+#pragma once
+class GameTimer :public IGameObject
+{
+public:
+	GameTimer();
+	~GameTimer();
+	bool Start() override;
+	void Update() override;
+	void Render(RenderContext& rc) override;
+
+	//メンバ変数
+	FontRender m_fontRender;
+	float m_maxTimer = 60.0f;//制限時間
+	float m_timer = 0.0f;//タイマー
+};
