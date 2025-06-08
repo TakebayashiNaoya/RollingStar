@@ -15,29 +15,7 @@ C:\Git\RollingStar\k2Engine\graphics\light\VolumeLightBase.h(94,34): warning C42
   GeometryData.cpp
   SceneGeometryData.cpp
   FontRender.cpp
-  PointLight.cpp
-  SceneLight.cpp
-  SpotLight.cpp
-  VolumeLightBase.cpp
-  VolumeLightRender.cpp
-  VolumePointLight.cpp
-  VolumeSpotLight.cpp
   ModelRender.cpp
-  Bloom.cpp
-  CalcSceneLuminance.cpp
-  Dof.cpp
-  Fxaa.cpp
-  PostEffect.cpp
-  コードを生成中...
-C:\Git\RollingStar\k2EngineLow\dbg\MyAssert.h(18,1): warning C5082: 'va_start' の 2 番目の引数が、最後の名前付きパラメーターではありません
-  コンパイル中...
-  PostEffectComponentBase.cpp
-  Ssao.cpp
-  Ssr.cpp
-  ToneMap.cpp
-  CascadeShadowMapMatrix.cpp
-  LightCulling.cpp
-  ShadowMapRender.cpp
   RenderingEngine.cpp
 C:\Git\RollingStar\k2Engine\graphics\RenderingEngine.cpp(227,111): warning C4305: '引数': 'int' から 'bool' へ切り詰めます。
   (ソース ファイル '/graphics/RenderingEngine.cpp' をコンパイルしています)
@@ -64,6 +42,28 @@ C:\Git\RollingStar\k2Engine\graphics\RenderingEngine.cpp(230,113): warning C4305
   (ソース ファイル '/graphics/RenderingEngine.cpp' をコンパイルしています)
   
   SpriteRender.cpp
+  PointLight.cpp
+  SceneLight.cpp
+  SpotLight.cpp
+  VolumeLightBase.cpp
+  VolumeLightRender.cpp
+  VolumePointLight.cpp
+  VolumeSpotLight.cpp
+  Bloom.cpp
+  CalcSceneLuminance.cpp
+  Dof.cpp
+  コードを生成中...
+C:\Git\RollingStar\k2EngineLow\dbg\MyAssert.h(18,1): warning C5082: 'va_start' の 2 番目の引数が、最後の名前付きパラメーターではありません
+  コンパイル中...
+  Fxaa.cpp
+  PostEffect.cpp
+  PostEffectComponentBase.cpp
+  Ssao.cpp
+  Ssr.cpp
+  ToneMap.cpp
+  CascadeShadowMapMatrix.cpp
+  LightCulling.cpp
+  ShadowMapRender.cpp
   k2Engine.cpp
   Level2DRender.cpp
   MapChip2DRender.cpp

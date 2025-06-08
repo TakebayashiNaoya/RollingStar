@@ -3,6 +3,8 @@
   NaviMesh.cpp
   Path.cpp
   PathFinding.cpp
+  GamePad.cpp
+  GamePadVIbration.cpp
   Gameobjectmanager.cpp
   IGameObject.cpp
   AABB.cpp
@@ -17,16 +19,8 @@ C:\Git\RollingStar\k2EngineLow\graphics\ComputeAnimationVertexBuffer.cpp(42,49):
   
   ConstantBuffer.cpp
   DescriptorHeap.cpp
-  Effect.cpp
-  EffectEmitter.cpp
-  EffectEngine.cpp
-  Font.cpp
-  FontEngine.cpp
-  コードを生成中...
-C:\Git\RollingStar\k2EngineLow\dbg\MyAssert.h(18,1): warning C5082: 'va_start' の 2 番目の引数が、最後の名前付きパラメーターではありません
-C:\Git\RollingStar\k2EngineLow\dbg\MyAssert.h(18,1): warning C5082: 'va_start' の 2 番目の引数が、最後の名前付きパラメーターではありません
-  コンパイル中...
   FrameBuffer.cpp
+  GPUBuffer.cpp
   GaussianBlur.cpp
 C:\Git\RollingStar\k2EngineLow\graphics\GaussianBlur.cpp(18,53): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
   (ソース ファイル '/graphics/GaussianBlur.cpp' をコンパイルしています)
@@ -34,7 +28,9 @@ C:\Git\RollingStar\k2EngineLow\graphics\GaussianBlur.cpp(18,53): warning C4244: 
 C:\Git\RollingStar\k2EngineLow\graphics\GaussianBlur.cpp(19,55): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
   (ソース ファイル '/graphics/GaussianBlur.cpp' をコンパイルしています)
   
-  GPUBuffer.cpp
+  コードを生成中...
+C:\Git\RollingStar\k2EngineLow\dbg\MyAssert.h(18,1): warning C5082: 'va_start' の 2 番目の引数が、最後の名前付きパラメーターではありません
+  コンパイル中...
   GraphicsEngine.cpp
   IndexBuffer.cpp
   Material.cpp
@@ -42,6 +38,27 @@ C:\Git\RollingStar\k2EngineLow\graphics\GaussianBlur.cpp(19,55): warning C4244: 
   Model.cpp
   NullTextureMaps.cpp
   PipelineState.cpp
+  RWStructuredBuffer.cpp
+  RenderTarget.cpp
+  RootSignature.cpp
+  Shader.cpp
+C:\Git\RollingStar\k2EngineLow\graphics\Shader.cpp(126,13): warning C4267: '引数': 'size_t' から 'UINT32' に変換しました。データが失われているかもしれません。
+  (ソース ファイル '/graphics/Shader.cpp' をコンパイルしています)
+  
+  Skeleton.cpp
+  Sprite.cpp
+  StructuredBuffer.cpp
+  Texture.cpp
+  VertexBuffer.cpp
+  Effect.cpp
+  EffectEmitter.cpp
+  EffectEngine.cpp
+  Font.cpp
+  コードを生成中...
+C:\Git\RollingStar\k2EngineLow\dbg\MyAssert.h(18,1): warning C5082: 'va_start' の 2 番目の引数が、最後の名前付きパラメーターではありません
+C:\Git\RollingStar\k2EngineLow\dbg\MyAssert.h(18,1): warning C5082: 'va_start' の 2 番目の引数が、最後の名前付きパラメーターではありません
+  コンパイル中...
+  FontEngine.cpp
   BLASBuffer.cpp
   RaytracingDescriptorHeaps.cpp
   RaytracingEngine.cpp
@@ -53,23 +70,6 @@ C:\Git\RollingStar\k2EngineLow\graphics\raytracing\RaytracingWorld.cpp(30,11): w
   (ソース ファイル '/graphics/raytracing/RaytracingWorld.cpp' をコンパイルしています)
   
   TLASBuffer.cpp
-  RenderTarget.cpp
-  RootSignature.cpp
-  コードを生成中...
-C:\Git\RollingStar\k2EngineLow\dbg\MyAssert.h(18,1): warning C5082: 'va_start' の 2 番目の引数が、最後の名前付きパラメーターではありません
-  コンパイル中...
-  RWStructuredBuffer.cpp
-  Shader.cpp
-C:\Git\RollingStar\k2EngineLow\graphics\Shader.cpp(126,13): warning C4267: '引数': 'size_t' から 'UINT32' に変換しました。データが失われているかもしれません。
-  (ソース ファイル '/graphics/Shader.cpp' をコンパイルしています)
-  
-  Skeleton.cpp
-  Sprite.cpp
-  StructuredBuffer.cpp
-  Texture.cpp
-  VertexBuffer.cpp
-  GamePad.cpp
-  GamePadVIbration.cpp
   k2EngineLow.cpp
   CaslFile.cpp
   Level2D.cpp
@@ -92,9 +92,9 @@ C:\Git\RollingStar\k2EngineLow\online\SyncOnlineTwoPlayerMatchEngine.cpp(190,22)
   CapsuleCollider.cpp
   CharacterController.cpp
   DebugWireframe.cpp
-  PhysicsGhostObject.cpp
   MeshCollider.cpp
   Physics.cpp
+  PhysicsGhostObject.cpp
   PhysicsStaticObject.cpp
   RigidBody.cpp
   SphereCollider.cpp

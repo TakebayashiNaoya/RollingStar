@@ -9,6 +9,7 @@ class Transform;
 class Star;
 class Score;
 class GameTimer;
+class ResultView;
 
 //Gameシーンを管理するクラス。
 class Game : public IGameObject
@@ -26,10 +27,13 @@ public:
 	BackGround* m_backGround;
 	Score* m_score;
 	GameTimer* m_gameTimer;
+	ResultView* m_resultView;
 	Transform* m_transform;
 	SoundSource* m_gameBGM;		//ゲーム中のBGM。
 	Vector3 m_position;
 	Star* m_star[25];
 	LevelRender m_levelRender;
 	int starSum = 0;
+	int finishTime = 0;
+	int finishScore = 0;
 };
