@@ -19,6 +19,7 @@
     <ClCompile Include="Score.cpp" />
     <ClCompile Include="Star.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="ResultView.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -33,5 +34,6 @@
     <ClInclude Include="Score.h" />
     <ClInclude Include="Star.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="ResultView.h" />
   </ItemGroup>
 </Project>

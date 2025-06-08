@@ -48,6 +48,7 @@ C:\Git\RollingStar\k2EngineLow\ExEngine\bulletPhysics\src\BulletDynamics\MLCPSol
       不足している可変個引数 2 が書式文字列 '% s' に必要です
   
   btLemkeAlgorithm.cpp
+  btMLCPSolver.cpp
 C:\Git\RollingStar\k2EngineLow\ExEngine\bulletPhysics\src\LinearMath\btMatrixX.h(109,18): warning C4244: '=': 'double' から 'T' への変換です。データが失われる可能性があります。
 C:\Git\RollingStar\k2EngineLow\ExEngine\bulletPhysics\src\LinearMath\btMatrixX.h(109,18): warning C4244:         with
 C:\Git\RollingStar\k2EngineLow\ExEngine\bulletPhysics\src\LinearMath\btMatrixX.h(109,18): warning C4244:         [
@@ -67,7 +68,6 @@ C:\Git\RollingStar\k2EngineLow\ExEngine\bulletPhysics\src\LinearMath\btMatrixX.h
               C:\Git\RollingStar\k2EngineLow\ExEngine\bulletPhysics\src\BulletDynamics\MLCPSolvers\btLemkeAlgorithm.cpp(251,5):
               'btLemkeAlgorithm::findLexicographicMinimum' の 'btVectorX<float>::nrm2' への最初の参照を参照してください
   
-  btMLCPSolver.cpp
   btRaycastVehicle.cpp
 C:\Git\RollingStar\k2EngineLow\ExEngine\bulletPhysics\src\BulletDynamics\ConstraintSolver\btContactConstraint.h(25,28): warning C4359: 'btContactConstraint': アライメント指定子は実際のアラインメント (128) より小さいため、無視されます。
   (ソース ファイル 'Vehicle/btRaycastVehicle.cpp' をコンパイルしています)

@@ -18,7 +18,8 @@ void GameTimer::Update()
 {
 	//ƒQ[ƒ€“àŽžŠÔ‚ðŽæ“¾
 	m_timer += g_gameTime->GetFrameDeltaTime();
-	float m_timeLimit = m_maxTimer - m_timer;
+
+	m_timeLimit = m_maxTimer - m_timer;
 
 	wchar_t wcsbuf[256];
 	swprintf_s(wcsbuf, 256, L"Žc‚èŽžŠÔ\n%d/%d•b", int(m_timeLimit), int(m_maxTimer));

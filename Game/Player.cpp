@@ -62,8 +62,8 @@ void Player::Move()
 	right.y = 0.0f;
 
 	//左スティックの入力量と120.0fを乗算。
-	right *= stickL.x * 0.01f;
-	forward *= stickL.y * 0.01f;
+	right *= stickL.x * 1.0f;
+	forward *= stickL.y * 1.0f;
 
 	//移動速度にスティックの入力量を加算する。
 	m_moveSpeed += right + forward;
