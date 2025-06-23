@@ -30,11 +30,11 @@ public:
 	Star* m_star = nullptr;
 	Title* m_title = nullptr;
 
-	SpriteRender m_endSpriteRender; //スプライトレンダ―。
-	SpriteRender m_backSpriteRender; //スプライトレンダ―。
-	SpriteRender* m_spriteRender; //スプライトレンダ―。
-	FontRender m_fontRender;//フォントレンダー
-	int m_spriteState = 0;//スプライトステート
+	SpriteRender m_endSpriteRender;		//スプライトレンダ―。
+	SpriteRender m_backSpriteRender;	//スプライトレンダ―。
+	SpriteRender* m_spriteRender;		//スプライトレンダ―。
+	FontRender m_fontRender;			//フォントレンダー
+	int m_spriteState = 0;				//スプライトステート
 	float finishCount = 0.0f;
 	bool m_isFlag = false;
 	int endState = 0;

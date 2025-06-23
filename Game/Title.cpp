@@ -7,14 +7,7 @@
 
 Title::Title()
 {
-	m_spriteRender.Init("Assets/sprite/title.dds", 1920.0f, 1080.0f);	//タイトル画像読み込み
-	g_soundEngine->ResistWaveFileBank(0, "Assets/sound/title.wav");		//タイトルBGM
-	g_soundEngine->ResistWaveFileBank(6, "Assets/sound/push.wav");		//ボタンSE
 
-	//BGMを流す
-	m_titleBgm = NewGO<SoundSource>(0);
-	m_titleBgm->Init(0);
-	m_titleBgm->Play(true);//ループ再生
 }
 
 Title::~Title()
@@ -27,6 +20,14 @@ Title::~Title()
 
 bool Title::Start()
 {
+	m_spriteRender.Init("Assets/sprite/title.dds", 1920.0f, 1080.0f);	//タイトル画像読み込み
+	g_soundEngine->ResistWaveFileBank(0, "Assets/sound/title.wav");		//タイトルBGM
+	g_soundEngine->ResistWaveFileBank(6, "Assets/sound/push.wav");		//ボタンSE
+
+	//BGMを流す
+	m_titleBgm = NewGO<SoundSource>(0);
+	m_titleBgm->Init(0);
+	m_titleBgm->Play(true);//ループ再生
 
 	return true;
 }
@@ -34,8 +35,8 @@ bool Title::Start()
 void Title::Update()
 {
 	//PUSH STARTの表示
-	m_fontRender.SetText(L"PUSH START");				//文字を設定する。
-	m_fontRender.SetPosition({ -350.0f,-200.0f,0.0f });	//表示する座標を設定する。
+	m_fontRender.SetText(L"PUSH (A) START");				//文字を設定する。
+	m_fontRender.SetPosition({ -470.0f,-200.0f,0.0f });	//表示する座標を設定する。
 	m_fontRender.SetScale(3.0f);						//文字のサイズ
 	m_fontRender.SetColor(g_vec4Yellow);				//表示する色を設定する。
 

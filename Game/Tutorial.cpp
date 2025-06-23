@@ -8,8 +8,7 @@
 
 Tutorial::Tutorial()
 {
-	m_spriteRender.Init("Assets/sprite/backBlack.dds", 1280.0f, 800.0f);//•”wŒi
-	g_soundEngine->ResistWaveFileBank(6, "Assets/sound/push.wav");		//ƒ{ƒ^ƒ“SE
+
 }
 
 Tutorial::~Tutorial()
@@ -19,6 +18,9 @@ Tutorial::~Tutorial()
 
 bool Tutorial::Start()
 {
+	m_spriteRender.Init("Assets/sprite/backBlack.dds", 1280.0f, 800.0f);//•”wŒi
+	g_soundEngine->ResistWaveFileBank(6, "Assets/sound/push.wav");		//ƒ{ƒ^ƒ“SE
+
 	m_game = NewGO<Game>(0, "game");
 	m_gameTimer = NewGO<GameTimer>(0, "gametimer");
 	return true;
