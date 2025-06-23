@@ -23,6 +23,7 @@
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Tutorial.cpp" />
     <ClCompile Include="CountDown.cpp" />
+    <ClCompile Include="StarSpawner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -41,5 +42,6 @@
     <ClInclude Include="Title.h" />
     <ClInclude Include="Tutorial.h" />
     <ClInclude Include="CountDown.h" />
+    <ClInclude Include="StarSpawner.h" />
   </ItemGroup>
 </Project>

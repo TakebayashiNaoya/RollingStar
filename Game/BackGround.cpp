@@ -21,9 +21,6 @@ namespace
 BackGround::BackGround()
 {
 	m_transform = new Transform;
-	m_modelRender.Init("Assets/modelData/moon.tkm");
-	m_modelRender.Update();
-	m_physicsStaticObject.CreateFromModel(m_modelRender.GetModel(), m_modelRender.GetModel().GetWorldMatrix());
 }
 
 BackGround::~BackGround()
@@ -33,6 +30,10 @@ BackGround::~BackGround()
 
 bool BackGround::Start()
 {
+	m_modelRender.Init("Assets/modelData/moon.tkm");
+	m_modelRender.Update();
+	m_physicsStaticObject.CreateFromModel(m_modelRender.GetModel(), m_modelRender.GetModel().GetWorldMatrix());
+
 	m_game = FindGO<Game>("game");
 	return true;
 }

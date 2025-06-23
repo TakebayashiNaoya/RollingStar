@@ -6,6 +6,16 @@
 
 Player::Player()
 {
+
+}
+
+Player::~Player()
+{
+
+}
+
+bool Player::Start()
+{
 	//アニメーションクリップをロードする。
 	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/idle.tka");
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
@@ -22,15 +32,7 @@ Player::Player()
 	m_characterController.Init(25.0f, 75.0f, m_position);
 
 	g_soundEngine->ResistWaveFileBank(3, "Assets/sound/jump.wav");//ジャンプの音
-}
 
-Player::~Player()
-{
-
-}
-
-bool Player::Start()
-{
 	m_game = FindGO<Game>("game");
 
 	return true;

@@ -13,6 +13,16 @@
 
 ResultView::ResultView()
 {
+
+}
+
+ResultView::~ResultView()
+{
+	DeleteGO(m_game);
+}
+
+bool ResultView::Start()
+{
 	m_endSpriteRender.Init("Assets/sprite/end.dds", 1920.0f, 1080.0f);
 	m_backSpriteRender.Init("Assets/sprite/backBlack.dds", 1280.0f, 720.0f);
 	g_soundEngine->ResistWaveFileBank(6, "Assets/sound/push.wav");		//ボタンSE
@@ -20,28 +30,15 @@ ResultView::ResultView()
 	g_soundEngine->ResistWaveFileBank(5, "Assets/sound/end.wav");		//終了サウンド
 
 	m_spriteRender = &m_endSpriteRender;
-}
 
-ResultView::~ResultView()
-{
-	DeleteGO(m_backGround);
-	DeleteGO(m_game);
-	DeleteGO(m_gameCamera);
-	DeleteGO(m_gameTimer);
-	DeleteGO(m_player);
-	DeleteGO(m_score);
-	DeleteGO(m_star);
-}
-
-bool ResultView::Start()
-{
-	m_backGround = FindGO<BackGround>("background");
-	m_game = FindGO<Game>("game");
+	/*m_backGround = FindGO<BackGround>("background");
 	m_gameCamera = FindGO<GameCamera>("gamecamera");
-	m_gameTimer = FindGO<GameTimer>("gametimer");
 	m_player = FindGO<Player>("player");
+	m_star = FindGO<Star>("star");*/
+
+	m_game = FindGO<Game>("game");
+	m_gameTimer = FindGO<GameTimer>("gametimer");
 	m_score = FindGO<Score>("score");
-	m_star = FindGO<Star>("star");
 
 	return true;
 }

@@ -5,36 +5,34 @@ class Transform;
 class Player;
 class Score;
 class Game;
+class StarSpawner;
 
 class Star :public IGameObject
 {
 public:
 	Star();
 	~Star();
-	bool Start();
+	bool Start() override;
 	void Update();
 	void Render(RenderContext& rc);
-
-	Vector3 GetPosition()
+	void SetTransform(Transform* p)
 	{
-		return m_position;
-	}
-
-	Transform* GetTransform()
-	{
-		return m_transform;
-	}
-
-	Game* m_game;
+		m_transform = p;
+	};
 
 private:
+	void GetStar();
+
+private:
+	Game* m_game = nullptr;
 	ModelRender				m_modelRender;
 	PhysicsStaticObject		m_physicsStaticObject;
-	Quaternion				m_rotation;
-	Vector3					m_moveSpeed = Vector3(0.0f, 0.0f, 0.0f);
 	Vector3					m_position;
+	//Quaternion				m_rotation;
+	//Vector3					m_scale;
+	Vector3					m_moveSpeed = Vector3(0.0f, 0.0f, 0.0f);
 	Transform* m_transform = nullptr;
-	BackGround* m_backGround = nullptr;
 	Player* m_player = nullptr;
 	Score* m_score = nullptr;
+	StarSpawner* m_starSpawner = nullptr;
 };
