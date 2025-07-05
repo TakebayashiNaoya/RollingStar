@@ -11,6 +11,7 @@ class Score;
 class GameTimer;
 class ResultView;
 class StarSpawner;
+class PopScoreManager;
 
 //Gameシーンを管理するクラス。
 class Game : public IGameObject
@@ -22,6 +23,7 @@ public:
 	//更新処理。
 	void Update();
 	void LevelInit();
+	void InitSky();//空を初期化
 
 	Player* m_player;			//プレイヤー。
 	GameCamera* m_gameCamera;			//ゲームカメラ。
@@ -31,6 +33,7 @@ public:
 	ResultView* m_resultView;
 	Transform* m_transform;
 	SoundSource* m_gameBGM;		//ゲーム中のBGM。
+	PopScoreManager* m_popScoreManager;
 	Vector3 m_position;
 	//Star* m_starSpawner[25];
 	StarSpawner* m_starSpawner[161];
@@ -40,4 +43,8 @@ public:
 	int m_finishScore = 0;
 	bool m_gameEndFlag = false;
 	bool m_gameStartFlag = false;
+
+	SkyCube* m_skyCube = nullptr;//スカイキューブ
+	int m_skyCubeType = enSkyCubeType_Night;
+	Vector3 m_skyCubePos = { 0.0f,3000.0f,0.0f };
 };

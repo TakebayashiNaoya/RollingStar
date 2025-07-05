@@ -4,11 +4,6 @@
 #include "sound/SoundEngine.h"2
 #include "sound/SoundSource.h"
 
-Player::Player()
-{
-
-}
-
 Player::~Player()
 {
 
@@ -23,10 +18,9 @@ bool Player::Start()
 	m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Jump].Load("Assets/animData/jump.tka");
 	m_animationClips[enAnimationClip_Jump].SetLoopFlag(false);
+
 	//ユニティちゃんのモデルを読み込む。
 	m_modelRender.Init("Assets/modelData/unityChan.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisY);
-
-	m_position = { 0.0f,3000.0f,0.0f };
 
 	//キャラコンを初期化する。
 	m_characterController.Init(25.0f, 75.0f, m_position);
@@ -47,6 +41,19 @@ void Player::Update()
 	PlayAnimation();		//アニメーションの再生。
 	m_modelRender.Update();	//絵描きさんの更新処理。
 }
+
+//描画処理。
+void Player::Render(RenderContext& rc)
+{
+	//ユニティちゃんを描画する。
+	m_modelRender.Draw(rc);
+}
+
+
+///////////////////////////////////////////////////////////////////
+// ここからメソッドまとめ。
+///////////////////////////////////////////////////////////////////
+
 
 void Player::Move()
 {
@@ -171,9 +178,3 @@ void Player::PlayAnimation()
 	}
 }
 
-//描画処理。
-void Player::Render(RenderContext& rc)
-{
-	//ユニティちゃんを描画する。
-	m_modelRender.Draw(rc);
-}

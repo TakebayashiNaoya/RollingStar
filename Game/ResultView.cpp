@@ -11,11 +11,6 @@
 #include "sound/SoundEngine.h"
 #include "sound/SoundSource.h"
 
-ResultView::ResultView()
-{
-
-}
-
 ResultView::~ResultView()
 {
 	DeleteGO(m_game);
@@ -24,17 +19,12 @@ ResultView::~ResultView()
 bool ResultView::Start()
 {
 	m_endSpriteRender.Init("Assets/sprite/end.dds", 1920.0f, 1080.0f);
-	m_backSpriteRender.Init("Assets/sprite/backBlack.dds", 1280.0f, 720.0f);
+	m_backSpriteRender.Init("Assets/sprite/result.dds", 1280.0f, 900.0f);
 	g_soundEngine->ResistWaveFileBank(6, "Assets/sound/push.wav");		//ボタンSE
 	g_soundEngine->ResistWaveFileBank(7, "Assets/sound/result.wav");	//歓声SE
 	g_soundEngine->ResistWaveFileBank(5, "Assets/sound/end.wav");		//終了サウンド
 
 	m_spriteRender = &m_endSpriteRender;
-
-	/*m_backGround = FindGO<BackGround>("background");
-	m_gameCamera = FindGO<GameCamera>("gamecamera");
-	m_player = FindGO<Player>("player");
-	m_star = FindGO<Star>("star");*/
 
 	m_game = FindGO<Game>("game");
 	m_gameTimer = FindGO<GameTimer>("gametimer");
@@ -58,15 +48,12 @@ void ResultView::Update()
 			endState = 1;	//終了サウンドは1回だけ鳴らす
 		}
 
+		//タイムアップから3秒後にリザルト表示
 		finishCount += g_gameTime->GetFrameDeltaTime();
-
-		if (finishCount >= 3.0f) {
-			m_spriteState = 1;
-		}
+		if (finishCount >= 3.0f) { m_spriteState = 1; }
 
 		if (m_spriteState == 0) {
 			m_spriteRender = &m_endSpriteRender;
-
 		}
 		else if (m_spriteState == 1) {
 			m_spriteRender = &m_backSpriteRender;
@@ -80,13 +67,29 @@ void ResultView::Update()
 				callState = 1;	//歓声SEは1回だけ鳴らす
 			}
 
-			//リザルト表示
-			wchar_t wcsbuf[256];
-			swprintf_s(wcsbuf, 256, L"　　　【結果】\n\n　 のこりタイム　%d秒\n\n　 集めたスター　%d/%d\n\n（A）を押してタイトルへ", int(m_gameTimer->m_timeLimit), m_score->m_counter, m_game->m_starSum);
-			m_fontRender.SetText(wcsbuf);						//描画する。
-			m_fontRender.SetScale(2.0f);						//文字のサイズ
-			m_fontRender.SetPosition({ -550.0f,300.0f,0.0f });	//表示する座標を設定する。
-			m_fontRender.SetColor(g_vec4White);					//表示する色を設定する。
+			/// <summary>
+			/// フォント設定。
+			/// </summary>
+			/// {表示したい変数(intのみ) , x座標 , y座標 , サイズ , 色}
+			FontOption text[Font_Num];
+			text[totalScore] = { m_score->m_totalScore,-250.0f,230.0f,4.0f,g_vec4White };
+			text[redStar] = { m_score->m_redStarCount,410.0f,-160.0f,2.0f,g_vec4White };
+			text[orangeStar] = { m_score->m_orangeStarCount,0.0f,-160.0f,2.0f,g_vec4White };
+			text[purpleStar] = { m_score->m_purpleStarCount,-360.0f,-160.0f,2.0f,g_vec4White };
+			text[blueStar] = { m_score->m_blueStarCount,410.0f,-20.0f,2.0f,g_vec4White };
+			text[greenStar] = { m_score->m_greenStarCount,0.0f,-20.0f,2.0f,g_vec4White };
+			text[normalStar] = { m_score->m_normalStarCount,-360.0f,-20.0f,2.0f,g_vec4White };
+
+			for (int i = 0; i < Font_Num; i++)
+			{
+				wchar_t tmp[256];
+				swprintf_s(tmp, 256, L"%d", text[i].data);
+				m_fontRender[i].SetText(tmp);										//テキスト表示
+				m_fontRender[i].SetPosition({ text[i].pos_x,text[i].pos_y ,0 });	//座標
+				m_fontRender[i].SetScale(text[i].scale);							//サイズ
+				m_fontRender[i].SetColor(text[i].textColor);						//色
+			}
+
 
 			if (g_pad[0]->IsTrigger(enButtonA))
 			{
@@ -110,6 +113,11 @@ void ResultView::Render(RenderContext& rc)
 {
 	if (m_isFlag == true) {
 		m_spriteRender->Draw(rc);
-		m_fontRender.Draw(rc);
+
+		for (int i = 0; i < Font_Num; i++)
+		{
+			m_fontRender[i].Draw(rc);
+		}
 	}
 }
+

@@ -11,7 +11,6 @@ public:
 	~StarSpawner();
 	bool Start();
 	void Update();
-	void Render(RenderContext& rc);
 
 	Transform* GetTransform()
 	{
@@ -24,5 +23,6 @@ private:
 	ModelRender m_modelRender;
 	Transform* m_transform = nullptr;
 	BackGround* m_backGround = nullptr;
-	bool isStarDeath = false;
+	Star* m_star = nullptr;
+	float m_respawnTimer = 0.0f;
 };

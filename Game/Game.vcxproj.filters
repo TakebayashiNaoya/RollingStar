@@ -24,6 +24,9 @@
     <ClCompile Include="Tutorial.cpp" />
     <ClCompile Include="CountDown.cpp" />
     <ClCompile Include="StarSpawner.cpp" />
+    <ClCompile Include="PopScore.cpp" />
+    <ClCompile Include="PopScoreManager.cpp" />
+    <ClCompile Include="GameLoding.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -43,5 +46,9 @@
     <ClInclude Include="Tutorial.h" />
     <ClInclude Include="CountDown.h" />
     <ClInclude Include="StarSpawner.h" />
+    <ClInclude Include="PopScore.h" />
+    <ClInclude Include="Type.h" />
+    <ClInclude Include="PopScoreManager.h" />
+    <ClInclude Include="GameLoding.h" />
   </ItemGroup>
 </Project>

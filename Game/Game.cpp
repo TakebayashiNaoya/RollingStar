@@ -11,6 +11,7 @@
 #include "GameTimer.h"
 #include "ResultView.h"
 #include "StarSpawner.h"
+#include "PopScoreManager.h"
 
 Game::Game()
 {
@@ -19,36 +20,35 @@ Game::Game()
 
 Game::~Game()
 {
-	/*for (auto starSpawner : FindGOs<StarSpawner>("starspawner")) {
+	for (auto star : FindGOs<Star>("star")) {
+		DeleteGO(star);
+	}
+	for (auto starSpawner : FindGOs<StarSpawner>("starspawner")) {
 		DeleteGO(starSpawner);
-	}*/
-	DeleteGO(m_starSpawner[161]);
+	}
 
-	DeleteGO(m_player);
-	DeleteGO(m_gameCamera);
-	DeleteGO(m_score);
-	DeleteGO(m_gameTimer);
-	DeleteGO(m_backGround);
+	DeleteGO(m_popScoreManager);
 	DeleteGO(m_gameBGM);
-
+	DeleteGO(m_backGround);
+	DeleteGO(m_gameTimer);
+	DeleteGO(m_score);
+	DeleteGO(m_gameCamera);
+	DeleteGO(m_player);
 }
 
 bool Game::Start()
 {
+	//空を作る。
+	InitSky();
+
+	//ポップスコアマネージャーを起動。
+	m_popScoreManager = NewGO<PopScoreManager>(0, "popscoremanager");
+
 	//プレイヤーのオブジェクトを作る。
 	m_player = NewGO<Player>(0, "player");
 
 	//ゲームカメラのオブジェクトを作る。
 	m_gameCamera = NewGO<GameCamera>(0, "gamecamera");
-
-	//ゲームBGM
-	g_soundEngine->ResistWaveFileBank(1, "Assets/sound/inGame.wav");
-
-	//ゲームBGMを流す
-	m_gameBGM = NewGO<SoundSource>(0);
-	m_gameBGM->Init(1);
-	m_gameBGM->Play(true);//ループ再生
-	m_gameBGM->SetVolume(0.5f);
 
 	LevelInit();
 
@@ -61,13 +61,23 @@ bool Game::Start()
 	//ゲームタイマー
 	m_gameTimer = FindGO<GameTimer>("gametimer");
 
+	//ゲームBGM
+	g_soundEngine->ResistWaveFileBank(1, "Assets/sound/inGame.wav");
+
+	//ゲームBGMを流す
+	m_gameBGM = NewGO<SoundSource>(0);
+	m_gameBGM->Init(1);
+	m_gameBGM->Play(true);//ループ再生
+	m_gameBGM->SetVolume(0.5f);
+
 	return true;
 }
 
 //更新処理。
 void Game::Update()
 {
-	if (m_gameTimer->m_timeLimit < 0 or m_score->m_counter == m_starSum) {
+	if (m_gameTimer->m_timeLimit < 0) {
+		m_gameStartFlag = false;
 		m_gameEndFlag = true;
 		m_resultView->m_isFlag = true;
 	}
@@ -104,4 +114,17 @@ void Game::LevelInit()
 			return true;
 		}
 		});
+}
+
+void Game::InitSky()
+{
+	//現在の空を破棄。
+	DeleteGO(m_skyCube);
+
+	m_skyCube = NewGO<SkyCube>(0, "skycube");
+	m_skyCube->SetType((EnSkyCubeType)m_skyCubeType);
+	m_skyCube->SetPosition(m_skyCubePos);
+
+	//環境光の計算のためのIBLテクスチャをセットする。
+	g_renderingEngine->SetAmbientByIBLTexture(m_skyCube->GetTextureFilePath(), 0.1f);
 }

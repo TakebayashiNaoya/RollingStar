@@ -5,7 +5,6 @@ class Game;
 class Player : public IGameObject
 {
 public:
-	Player();
 	~Player();
 	bool Start();
 	void Update();					//更新処理。
@@ -17,18 +16,20 @@ public:
 
 	//メンバ変数。
 	ModelRender m_modelRender;	//モデルレンダ―。
-	Vector3 m_position;			//座標。
 	enum EnAnimationClip {		//アニメーション。
 		enAnimationClip_Idle,
 		enAnimationClip_Walk,
 		enAnimationClip_Jump,
 		enAnimationClip_Num,
 	};
+
+	Vector3 m_position = { 0.0f,3000.0f,0.0f };
+	Quaternion m_rotation;
+	Vector3 m_scale;
 	Game* m_game;
 	AnimationClip m_animationClips[enAnimationClip_Num];//アニメーションクリップ。
 	CharacterController m_characterController;			//キャラクターコントローラー。
 	Vector3 m_moveSpeed;								//移動速度。
-	Quaternion m_rotation;								//クォータニオン。
 	int m_playerState = 0;								//プレイヤーのステート(状態)を表す変数。
 	int m_starCount = 0;								//集めた☆の数をカウントする。
 };

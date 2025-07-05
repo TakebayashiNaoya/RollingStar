@@ -12,7 +12,6 @@ class Title;
 class ResultView : public IGameObject
 {
 public:
-	ResultView();
 	~ResultView();
 	bool Start();
 	//更新処理。
@@ -33,10 +32,34 @@ public:
 	SpriteRender m_endSpriteRender;		//スプライトレンダ―。
 	SpriteRender m_backSpriteRender;	//スプライトレンダ―。
 	SpriteRender* m_spriteRender;		//スプライトレンダ―。
-	FontRender m_fontRender;			//フォントレンダー
+
 	int m_spriteState = 0;				//スプライトステート
 	float finishCount = 0.0f;
 	bool m_isFlag = false;
 	int endState = 0;
 	int callState = 0;
+
+	//テキストの種類
+	//追加するときはText_Numの上に
+	enum FontKinds {
+		totalScore,
+		redStar,
+		orangeStar,
+		purpleStar,
+		blueStar,
+		greenStar,
+		normalStar,
+		Font_Num
+	};
+
+	//テキストオプション
+	struct FontOption {
+		int data = 0;		//表示する変数
+		float pos_x = 0.0f;	//x座標
+		float pos_y = 0.0f;	//y座標
+		float scale = 0.0f;	//サイズ
+		Vector4 textColor;	//色
+	};
+
+	FontRender m_fontRender[Font_Num];//フォントレンダー
 };

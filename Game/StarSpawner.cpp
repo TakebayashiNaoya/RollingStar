@@ -4,6 +4,10 @@
 #include "Transform.h"
 #include "BackGround.h"
 
+namespace {
+	const float RESPAWN_TIME = 3.0f;
+}
+
 StarSpawner::StarSpawner()
 {
 	m_transform = new Transform;
@@ -19,23 +23,29 @@ bool StarSpawner::Start()
 	BackGround* bgIns = FindGO<BackGround>("background");
 	m_transform->SetParent(bgIns->GetTransform());
 
-	Star* star = NewGO<Star>(0, "star");
-	star->SetTransform(m_transform);
+	//親が複数おり、スター側からFindGOしてSetTransformできないため。
+	m_star = NewGO<Star>(0, "star");
+	m_star->SetTransform(m_transform);
 
 	return true;
 }
 
 void StarSpawner::Update()
 {
-	/*if (isStarDeath == true) {
-		NewGO<Star>(0, "star");
-	}*/
+	if (m_star == nullptr) {
+		m_respawnTimer += g_gameTime->GetFrameDeltaTime();
+		if (m_respawnTimer >= RESPAWN_TIME) {
+			m_star = NewGO<Star>(0, "star");
+			m_star->SetTransform(m_transform);
+			m_respawnTimer = 0.0f;//リセット
+		}
+	}
+	else if (m_star->isDead) {
+		DeleteGO(m_star);
+		m_star = nullptr;
+	}
 
 	m_transform->UpdateTransform();
 	m_modelRender.SetTRS(m_transform->m_position, m_transform->m_rotation, m_transform->m_scale);
 	m_modelRender.Update();
-}
-
-void StarSpawner::Render(RenderContext& rc)
-{
 }

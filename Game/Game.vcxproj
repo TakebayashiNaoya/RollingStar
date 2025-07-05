@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -227,9 +227,12 @@
     <ClCompile Include="CountDown.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera.cpp" />
+    <ClCompile Include="GameLoding.cpp" />
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PopScore.cpp" />
+    <ClCompile Include="PopScoreManager.cpp" />
     <ClCompile Include="ResultView.cpp" />
     <ClCompile Include="Score.cpp" />
     <ClCompile Include="Star.cpp" />
@@ -249,8 +252,11 @@
     <ClInclude Include="CountDown.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera.h" />
+    <ClInclude Include="GameLoding.h" />
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PopScore.h" />
+    <ClInclude Include="PopScoreManager.h" />
     <ClInclude Include="ResultView.h" />
     <ClInclude Include="Score.h" />
     <ClInclude Include="Star.h" />
@@ -260,6 +266,7 @@
     <ClInclude Include="Title.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Tutorial.h" />
+    <ClInclude Include="Type.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

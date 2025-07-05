@@ -32,13 +32,13 @@ void GameTimer::Update()
 	m_timeLimit = m_maxTimer - m_timer;
 
 	wchar_t wcsbuf[256];
-	swprintf_s(wcsbuf, 256, L"のこりタイム\n%d/%d秒", int(m_timeLimit), int(m_maxTimer));
+	swprintf_s(wcsbuf, 256, L"のこりタイム\n　%d/%d秒", int(m_timeLimit), int(m_maxTimer));
 
 	//描画する。
 	m_fontRender.SetText(wcsbuf);
 
 	//表示する座標を設定する。
-	m_fontRender.SetPosition({ -140.0f,500.0f,0.0f });
+	m_fontRender.SetPosition({ -200.0f,500.0f,0.0f });
 
 	//表示する色を設定する。
 	if (m_timeLimit > 30)

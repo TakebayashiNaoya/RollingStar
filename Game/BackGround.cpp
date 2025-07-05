@@ -15,7 +15,7 @@ namespace
 	 *		全部大文字
 	 *		詳しくはゲームプログラミング教材のextraに書いてるのでチェック！！
 	 */
-	const float SPEED_POWER = 0.5f;	//回転スピード
+	const float SPEED_POWER = 0.4f;	//回転スピード
 }
 
 BackGround::BackGround()
