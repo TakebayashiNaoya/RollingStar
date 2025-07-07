@@ -7,6 +7,7 @@ class Player;
 class Score;
 class Star;
 class Title;
+class SaveData;
 
 //ゲームクリア。
 class ResultView : public IGameObject
@@ -28,6 +29,7 @@ public:
 	Score* m_score = nullptr;
 	Star* m_star = nullptr;
 	Title* m_title = nullptr;
+	SaveData* m_saveData = nullptr;
 
 	SpriteRender m_endSpriteRender;		//スプライトレンダ―。
 	SpriteRender m_backSpriteRender;	//スプライトレンダ―。

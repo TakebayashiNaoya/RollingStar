@@ -10,6 +10,7 @@
 #include "Title.h"
 #include "sound/SoundEngine.h"
 #include "sound/SoundSource.h"
+#include "SaveData.h"
 
 ResultView::~ResultView()
 {
@@ -29,6 +30,7 @@ bool ResultView::Start()
 	m_game = FindGO<Game>("game");
 	m_gameTimer = FindGO<GameTimer>("gametimer");
 	m_score = FindGO<Score>("score");
+	m_saveData = FindGO<SaveData>("savedata");
 
 	return true;
 }
@@ -101,6 +103,9 @@ void ResultView::Update()
 
 				//タイトルへ
 				m_title = NewGO<Title>(0, "title");
+
+				m_saveData->m_scoreRankList.push_back(m_score->m_totalScore);
+
 				//ゲーム終了
 				DeleteGO(this);
 			}

@@ -14,7 +14,7 @@ public:
 	~Star();
 	bool Start() override;
 	void Update()override;
-	void Render(RenderContext& rc);
+	void Render(RenderContext& rc)override;
 	void SetTransform(Transform* p)
 	{
 		m_transform = p;

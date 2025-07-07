@@ -12,14 +12,24 @@
 #include "ResultView.h"
 #include "StarSpawner.h"
 #include "PopScoreManager.h"
+#include "LoadingView.h"
+
+namespace
+{
+	// 1フレームにNewGOできる数
+	const int MAX_NEWGO_COUNT = 5;
+}
 
 Game::Game()
 {
-
+	//スタースポナーとレベルオブジェクトを初期化
+	m_starSpawners.clear();
+	m_levelObjectDataList.clear();
 }
 
 Game::~Game()
 {
+	//スタースポナーと残っている星をデリート
 	for (auto star : FindGOs<Star>("star")) {
 		DeleteGO(star);
 	}
@@ -38,37 +48,78 @@ Game::~Game()
 
 bool Game::Start()
 {
-	//空を作る。
-	InitSky();
+	switch (m_gameNewGOType)
+	{
+	case enGameNewGOType_Init:
+	{
+		InitLevelObjectDataList();
 
-	//ポップスコアマネージャーを起動。
-	m_popScoreManager = NewGO<PopScoreManager>(0, "popscoremanager");
+		m_loadingView = FindGO<LoadingView>("loadingview");
+		//ロード1/6到達
+		m_loadingView->showLoadingPhases[LoadingView::EnLoadingPhase::enLoadingPhase_1] = true;
 
-	//プレイヤーのオブジェクトを作る。
-	m_player = NewGO<Player>(0, "player");
+		m_gameNewGOType = enGameNewGOType_Step1;
 
-	//ゲームカメラのオブジェクトを作る。
-	m_gameCamera = NewGO<GameCamera>(0, "gamecamera");
+		return false;
+	}
+	case enGameNewGOType_Step1:
+	{
+		InitSky();
+		m_popScoreManager = NewGO<PopScoreManager>(0, "popscoremanager");
+		m_player = NewGO<Player>(0, "player");
+		m_gameCamera = NewGO<GameCamera>(0, "gamecamera");
+		m_score = NewGO<Score>(0, "score");
+		m_resultView = NewGO<ResultView>(0, "resultview");
 
-	LevelInit();
+		//制限時間を取得するためにゲームタイマーをFindGO
+		m_gameTimer = NewGO<GameTimer>(0, "gametimer");
 
-	//スコア
-	m_score = NewGO<Score>(0, "score");
+		//ゲームBGM
+		g_soundEngine->ResistWaveFileBank(1, "Assets/sound/inGame.wav");
+		m_gameBGM = NewGO<SoundSource>(0);
+		m_gameBGM->Init(1);
+		m_gameBGM->Play(true);
+		m_gameBGM->SetVolume(0.5f);
 
-	//リザルトビュー
-	m_resultView = NewGO<ResultView>(0, "resultview");
+		//ロード2/6到達
+		m_loadingView->showLoadingPhases[LoadingView::EnLoadingPhase::enLoadingPhase_2] = true;
 
-	//ゲームタイマー
-	m_gameTimer = FindGO<GameTimer>("gametimer");
+		m_gameNewGOType = EnGameNewGOType_Step2;
+		return false;
+	}
+	case EnGameNewGOType_Step2:
+	{
+		//objDataのイニット進捗に応じて
+		if (m_objDataListIndex < m_levelObjectDataList.size()) {
+			for (int i = 0; i < MAX_NEWGO_COUNT; ++i) {
+				if (m_objDataListIndex >= m_levelObjectDataList.size()) {
+					break;
+				}
+				InitLevelObject(m_levelObjectDataList[m_objDataListIndex]);
+				m_objDataListIndex++;
+			}
 
-	//ゲームBGM
-	g_soundEngine->ResistWaveFileBank(1, "Assets/sound/inGame.wav");
+			if (m_objDataListIndex > m_levelObjectDataList.size() / 4) {
+				//ロード3/6到達
+				m_loadingView->showLoadingPhases[LoadingView::EnLoadingPhase::enLoadingPhase_3] = true;
+			}
+			if (m_objDataListIndex > m_levelObjectDataList.size() / 4 * 2) {
+				//ロード4/6到達
+				m_loadingView->showLoadingPhases[LoadingView::EnLoadingPhase::enLoadingPhase_4] = true;
+			}
+			if (m_objDataListIndex > m_levelObjectDataList.size() / 4 * 3) {
+				//ロード5/6到達
+				m_loadingView->showLoadingPhases[LoadingView::EnLoadingPhase::enLoadingPhase_5] = true;
+			}
 
-	//ゲームBGMを流す
-	m_gameBGM = NewGO<SoundSource>(0);
-	m_gameBGM->Init(1);
-	m_gameBGM->Play(true);//ループ再生
-	m_gameBGM->SetVolume(0.5f);
+			return false;
+		}
+		break;	// Stepが増えたらbreakを消す
+	}
+	}
+
+	//ロード6/6到達
+	m_loadingView->showLoadingPhases[LoadingView::EnLoadingPhase::enLoadingPhase_6] = true;
 
 	return true;
 }
@@ -83,38 +134,6 @@ void Game::Update()
 	}
 }
 
-void Game::LevelInit()
-{
-	bool is = false;
-	//レベルイニット
-	m_levelRender.Init("Assets/Level/StageLevel2.tkl", [&](LevelObjectData& objData) {
-
-		//月
-		if (objData.EqualObjectName(L"moon") == true) {
-			m_backGround = NewGO<BackGround>(0, "background");
-			m_backGround->GetTransform()->m_localPosition = objData.position;
-			m_backGround->GetTransform()->m_localRotation = objData.rotation;
-			m_backGround->GetTransform()->m_localScale = objData.scale;
-			return true;
-		}
-
-		//スター
-		if (objData.EqualObjectName(L"star") == true) {
-			if (is) {
-
-				//return true;
-			}
-			is = true;
-			m_starSpawner[m_starSum] = NewGO<StarSpawner>(1, "starspawner");
-			m_starSpawner[m_starSum]->GetTransform()->m_localPosition = objData.position;
-			m_starSpawner[m_starSum]->GetTransform()->m_localRotation = objData.rotation;
-			m_starSpawner[m_starSum]->GetTransform()->m_localScale = objData.scale;
-
-			m_starSum++;
-			return true;
-		}
-		});
-}
 
 void Game::InitSky()
 {
@@ -127,4 +146,37 @@ void Game::InitSky()
 
 	//環境光の計算のためのIBLテクスチャをセットする。
 	g_renderingEngine->SetAmbientByIBLTexture(m_skyCube->GetTextureFilePath(), 0.1f);
+}
+
+void Game::InitLevelObjectDataList()
+{
+	//レベルイニット
+	m_levelRender.Init("Assets/Level/StageLevel2.tkl", [&](LevelObjectData& objData)
+		{
+			m_levelObjectDataList.push_back(objData);
+
+			return true;
+		});
+}
+void Game::InitLevelObject(LevelObjectData& objData)
+{
+	//月
+	if (objData.EqualObjectName(L"moon") == true) {
+		m_backGround = NewGO<BackGround>(0, "background");
+		m_backGround->GetTransform()->m_localPosition = objData.position;
+		m_backGround->GetTransform()->m_localRotation = objData.rotation;
+		m_backGround->GetTransform()->m_localScale = objData.scale;
+		return;
+	}
+
+	//スター
+	if (objData.EqualObjectName(L"star") == true) {
+		StarSpawner* starSpaner = NewGO<StarSpawner>(1, "starspawner");;
+		starSpaner->GetTransform()->m_localPosition = objData.position;
+		starSpaner->GetTransform()->m_localRotation = objData.rotation;
+		starSpaner->GetTransform()->m_localScale = objData.scale;
+		m_starSpawners.push_back(starSpaner);
+		m_starSum++;
+		return;
+	}
 }
