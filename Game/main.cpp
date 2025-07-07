@@ -7,6 +7,7 @@
 #include "Game.h"
 #include "Title.h"
 
+#include "SaveData.h"
 
 
 void ReportLiveObjects()
@@ -37,6 +38,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//ワイヤーフレーム描画
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
+	//セーブデータクラスのオブジェクトを作成
+	NewGO<SaveData>(0, "savedata");
 
 	//Gameクラスのオブジェクトを作成。
 	NewGO<Title>(0, "title");

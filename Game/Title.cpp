@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "Title.h"
-#include "Tutorial.h"
 #include "Game.h"
 #include "sound/SoundEngine.h"
 #include "sound/SoundSource.h"
+#include "LoadingView.h"
 
 Title::Title()
 {
@@ -14,8 +14,9 @@ Title::~Title()
 {
 	//BGMを止める
 	DeleteGO(m_titleBgm);
-	//チュートリアルへ
-	m_tutorial = NewGO<Tutorial>(0, "tutorial");
+
+	//インゲームへ
+	m_game = NewGO<Game>(0, "game");
 }
 
 bool Title::Start()
@@ -40,17 +41,36 @@ void Title::Update()
 	m_fontRender.SetScale(3.0f);						//文字のサイズ
 	m_fontRender.SetColor(g_vec4Yellow);				//表示する色を設定する。
 
-	//Aを押したら終了
-	if (g_pad[0]->IsTrigger(enButtonA))
+	switch (m_titleStep)
 	{
-		//ボタンSE
-		SoundSource* se = NewGO<SoundSource>(0);
-		se->Init(6);
-		se->Play(false);
-		se->SetVolume(3.5f);
+	case Title::enTitleStep_1:
+		//Aを押したら終了
+		if (g_pad[0]->IsTrigger(enButtonA))
+		{
+			//ボタンSE
+			SoundSource* se = NewGO<SoundSource>(0);
+			se->Init(6);
+			se->Play(false);
+			se->SetVolume(3.5f);
 
+			//ロード画面を表示
+			NewGO<LoadingView>(0, "loadingview");
+
+			m_titleStep = enTitleStep_2;
+		}
+		break;
+	case Title::enTitleStep_2:
+		//1フレーム待つため
+		m_titleStep = enTitleStep_3;
+		break;
+	case Title::enTitleStep_3:
 		DeleteGO(this);
+		break;
+	default:
+		break;
 	}
+
+
 }
 
 void Title::Render(RenderContext& rc)

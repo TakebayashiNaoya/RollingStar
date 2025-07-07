@@ -6,7 +6,8 @@ enum EnStarColorType {
 	enStarColorType_Purple,
 	enStarColorType_Blue,
 	enStarColorType_Green,
-	enStarColorType_Normal
+	enStarColorType_Normal,
+	Sprite_Num
 };
 
 namespace {

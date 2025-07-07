@@ -20,7 +20,7 @@ bool GameCamera::Start()
 
 	//カメラのニアクリップとファークリップを設定する。
 	g_camera3D->SetNear(1.0f);
-	g_camera3D->SetFar(3000.0f);
+	g_camera3D->SetFar(5000.0f);
 
 	return true;
 }
