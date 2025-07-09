@@ -1,13 +1,13 @@
 #pragma once
 
-enum EnStarColorType {
-	enStarColorType_Red,
-	enStarColorType_Orange,
-	enStarColorType_Purple,
-	enStarColorType_Blue,
-	enStarColorType_Green,
-	enStarColorType_Normal,
-	Sprite_Num
+enum EnStarKinds {
+	enStarKinds_Red,
+	enStarKinds_Orange,
+	enStarKinds_Purple,
+	enStarKinds_Blue,
+	enStarKinds_Green,
+	enStarKinds_Normal,
+	StarKinds_Num
 };
 
 namespace {

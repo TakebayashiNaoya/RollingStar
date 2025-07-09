@@ -1,4 +1,5 @@
 #pragma once
+#include "Type.h"
 
 class Star;
 class Game;
@@ -18,34 +19,17 @@ public:
 	Star* m_star = nullptr;
 	Game* m_game = nullptr;
 
-	SpriteRender m_redStarSpriteRender;
-	SpriteRender m_orangeStarSpriteRender;
-	SpriteRender m_purpleStarSpriteRender;
-	SpriteRender m_blueStarSpriteRender;
-	SpriteRender m_greenStarSpriteRender;
-	SpriteRender m_normalStarSpriteRender;
+	SpriteRender m_starSpriteRender[StarKinds_Num];
+
+	int m_starCount[StarKinds_Num];
 
 	int m_totalScore = 0;		//トータルスコア
-	int m_redStarCount = 0;		//レッドスター
 	int m_orangeStarCount = 0;	//オレンジスター
 	int m_purpleStarCount = 0;	//パープルスター
 	int m_blueStarCount = 0;	//ブルースター
 	int m_greenStarCount = 0;	//グリーンスター
 	int m_normalStarCount = 0;	//ノーマルスター
 
-
-	//テキストの種類
-	//追加するときはText_Numの上に
-	enum EnFontKinds {
-		enFontKinds_Total,
-		enFontKinds_Red,
-		enFontKinds_Orange,
-		enFontKinds_Purple,
-		enFontKinds_Blue,
-		enFontKinds_Green,
-		enFontKinds_Normal,
-		Font_Num
-	};
 
 	//フォントオプション
 	struct FontOption {
@@ -56,12 +40,10 @@ public:
 		Vector4 textColor;	//色
 	};
 
-	//フォントレンダー
-	FontRender m_score;
-	FontRender m_fontRender[Font_Num];
-	SpriteRender m_spriteRender[Font_Num];//スプライトレンダー
 
-
-
+	FontRender m_scoreFontRender;		//「スコア」と表示	
+	FontRender m_totalScoreFontRender;	//合計スコアを表示
+	FontRender m_getStarCountFontRender[StarKinds_Num];
+	SpriteRender m_spriteRender[StarKinds_Num];
 };
 

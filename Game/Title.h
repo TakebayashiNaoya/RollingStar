@@ -21,7 +21,8 @@ public:
 
 	//ƒƒ“ƒo•Ï”
 	EnTitleStep m_titleStep;
-	SpriteRender m_spriteRender;
+	SpriteRender m_titleViewSpriteRender;
+	SpriteRender m_pushASpriteRender;
 	Game* m_game = nullptr;
 	FontRender m_fontRender;
 	SoundSource* m_titleBgm;
