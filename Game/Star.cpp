@@ -58,12 +58,12 @@ void Star::Render(RenderContext& rc)
 /// </summary>
 void Star::SetStarColor()
 {
-	if (rand() % 100 < 1) { starColor = enStarColorType_Red; }
-	else if (rand() % 100 < 5) { starColor = enStarColorType_Orange; }
-	else if (rand() % 100 < 10) { starColor = enStarColorType_Purple; }
-	else if (rand() % 100 < 15) { starColor = enStarColorType_Blue; }
-	else if (rand() % 100 < 30) { starColor = enStarColorType_Green; }
-	else { starColor = enStarColorType_Normal; }
+	if (rand() % 100 < 1) { starColor = enStarKinds_Red; }
+	else if (rand() % 100 < 5) { starColor = enStarKinds_Orange; }
+	else if (rand() % 100 < 10) { starColor = enStarKinds_Purple; }
+	else if (rand() % 100 < 15) { starColor = enStarKinds_Blue; }
+	else if (rand() % 100 < 30) { starColor = enStarKinds_Green; }
+	else { starColor = enStarKinds_Normal; }
 }
 
 /// <summary>
@@ -73,22 +73,22 @@ void Star::SetInit()
 {
 	switch (starColor)
 	{
-	case enStarColorType_Red:
+	case enStarKinds_Red:
 		m_modelRender.Init("Assets/modelData/redStar.tkm");
 		break;
-	case enStarColorType_Orange:
+	case enStarKinds_Orange:
 		m_modelRender.Init("Assets/modelData/orangeStar.tkm");
 		break;
-	case enStarColorType_Purple:
+	case enStarKinds_Purple:
 		m_modelRender.Init("Assets/modelData/purpleStar.tkm");
 		break;
-	case enStarColorType_Blue:
+	case enStarKinds_Blue:
 		m_modelRender.Init("Assets/modelData/blueStar.tkm");
 		break;
-	case enStarColorType_Green:
+	case enStarKinds_Green:
 		m_modelRender.Init("Assets/modelData/greenStar.tkm");
 		break;
-	case enStarColorType_Normal:
+	case enStarKinds_Normal:
 		m_modelRender.Init("Assets/modelData/star.tkm");
 		break;
 	}
@@ -101,18 +101,20 @@ void Star::GetStar()
 {
 	Vector3 diff = m_transform->m_position - m_player->m_position;
 
-	//プレイヤーと☆の距離が150.0fより小さかったら。
-	const float distnce = diff.Length();
-	if (distnce <= GET_STAR_LENGTH)
-	{
-		GetStarSE();		//スター取得SE
+	if (m_game->m_gameStartFlag) {
+		//プレイヤーと☆の距離が150.0fより小さかったら。
+		const float distnce = diff.Length();
+		if (distnce <= GET_STAR_LENGTH)
+		{
+			GetStarSE();		//スター取得SE
 
-		GetStarCounter();	//スター取得カウント
+			GetStarCounter();	//スター取得カウント
 
-		isDead = true;		//スポナーにスターが消えたことを伝える
+			isDead = true;		//スポナーにスターが消えたことを伝える
 
-		m_popScoreManager->isPopFlag = true;//スコアをポップさせる
-		m_popScoreManager->colorChecker = starColor;
+			m_popScoreManager->isPopFlag = true;//スコアをポップさせる
+			m_popScoreManager->colorChecker = starColor;
+		}
 	}
 }
 
@@ -136,23 +138,23 @@ void Star::GetStarCounter()
 	{
 		switch (starColor)
 		{
-		case enStarColorType_Red:
-			m_score->m_redStarCount++;
+		case enStarKinds_Red:
+			m_score->m_starCount[enStarKinds_Red]++;
 			break;
-		case enStarColorType_Orange:
-			m_score->m_orangeStarCount++;
+		case enStarKinds_Orange:
+			m_score->m_starCount[enStarKinds_Orange]++;
 			break;
-		case enStarColorType_Purple:
-			m_score->m_purpleStarCount++;
+		case enStarKinds_Purple:
+			m_score->m_starCount[enStarKinds_Purple]++;
 			break;
-		case enStarColorType_Blue:
-			m_score->m_blueStarCount++;
+		case enStarKinds_Blue:
+			m_score->m_starCount[enStarKinds_Blue]++;
 			break;
-		case enStarColorType_Green:
-			m_score->m_greenStarCount++;
+		case enStarKinds_Green:
+			m_score->m_starCount[enStarKinds_Green]++;
 			break;
-		case enStarColorType_Normal:
-			m_score->m_normalStarCount++;
+		case enStarKinds_Normal:
+			m_score->m_starCount[enStarKinds_Normal]++;
 			break;
 		}
 	}

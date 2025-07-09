@@ -23,37 +23,37 @@ bool PopScore::Start()
 
 	switch (m_popScoreManager->colorChecker)
 	{
-	case enStarColorType_Red:
+	case enStarKinds_Red:
 		m_setPoint = RED_STAR_POINT;
 		m_setColor = { 1.0f,0.0f,0.0f,1.0f };
 		m_setScale = 2.0f;
 		m_setPos = { -140.0f,80.0f };
 		break;
-	case enStarColorType_Orange:
+	case enStarKinds_Orange:
 		m_setPoint = ORANGE_STAR_POINT;
 		m_setColor = { 1.0f,0.5f,0.0f,1.0f };
 		m_setScale = 1.9f;
 		m_setPos = { -115.0f,80.0f };
 		break;
-	case enStarColorType_Purple:
+	case enStarKinds_Purple:
 		m_setPoint = PURPLE_STAR_POINT;
 		m_setColor = { 1.0f,0.0f,1.0f,1.0f };
 		m_setScale = 1.8f;
 		m_setPos = { -110.0f,80.0f };
 		break;
-	case enStarColorType_Blue:
+	case enStarKinds_Blue:
 		m_setPoint = BLUE_STAR_POINT;
 		m_setColor = { 0.0f,0.0f,1.0f,1.0f };
 		m_setScale = 1.7f;
 		m_setPos = { -105.0f,80.0f };
 		break;
-	case enStarColorType_Green:
+	case enStarKinds_Green:
 		m_setPoint = GREEN_STAR_POINT;
 		m_setColor = { 0.0f,1.0f,0.0f,1.0f };
 		m_setScale = 1.6f;
 		m_setPos = { -100.0f,80.0f };
 		break;
-	case enStarColorType_Normal:
+	case enStarKinds_Normal:
 		m_setPoint = NORMAL_STAR_POINT;
 		m_setColor = { 1.0f,1.0f,0.0f,1.0f };
 		m_setScale = 1.5f;
