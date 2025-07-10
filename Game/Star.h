@@ -1,12 +1,13 @@
+///
+/// スターを管理するクラス
+///
 #pragma once
 
-class BackGround;
-class Transform;
-class Player;
-class Score;
 class Game;
-class StarSpawner;
+class Player;
 class PopScoreManager;
+class Score;
+class Transform;
 
 class Star :public IGameObject
 {
@@ -15,30 +16,34 @@ public:
 	bool Start() override;
 	void Update()override;
 	void Render(RenderContext& rc)override;
-	void SetTransform(Transform* p)
-	{
-		m_transform = p;
-	};
+
 
 	bool isDead = false;
 	int starColor;
+
+public:
+	void SetTransform(Transform* p)
+	{
+		m_transform = p;
+	}
 
 private:
 	void SetStarColor();
 	void SetInit();
 	void GetStar();
 	void GetStarSE();
-	void GetStarCounter();
 	void Rotation();
 
 private:
 	Game* m_game = nullptr;
-	ModelRender				m_modelRender;
-	Vector3					m_moveSpeed = Vector3(0.0f, 0.0f, 0.0f);
-	Transform* m_transform = nullptr;
 	Player* m_player = nullptr;
-	Score* m_score = nullptr;
 	PopScoreManager* m_popScoreManager = nullptr;
-	Vector3 m_position;
-	Quaternion m_rotation;
+	Score* m_score = nullptr;
+	Transform* m_transform = nullptr;
+
+private:
+	ModelRender	m_modelRender;
+	Vector3		m_moveSpeed = Vector3::Zero;
+	Vector3		m_position = Vector3::Zero;
+	Quaternion	m_rotation;
 };

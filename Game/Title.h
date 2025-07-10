@@ -1,30 +1,32 @@
+///
+/// タイトルを管理するクラス
+///
 #pragma once
-#include "sound/SoundSource.h"
 
-class Tutorial;
 class Game;
 
 class Title :public IGameObject
 {
-public:
-	Title();
-	~Title();
-	bool Start();
-	void Update();
-	void Render(RenderContext& rc);
-
+private:
 	enum EnTitleStep {
 		enTitleStep_1,
 		enTitleStep_2,
 		enTitleStep_3,
 	};
 
-	//メンバ変数
+public:
+	~Title();
+	bool Start()override;
+	void Update()override;
+	void Render(RenderContext& rc)override;
+
+private:
+	Game* m_game = nullptr;
+	SoundSource* m_titleBgm = nullptr;
+
+private:
 	EnTitleStep m_titleStep;
 	SpriteRender m_titleViewSpriteRender;
-	SpriteRender m_pushASpriteRender;
-	Game* m_game = nullptr;
 	FontRender m_fontRender;
-	SoundSource* m_titleBgm;
 };
 

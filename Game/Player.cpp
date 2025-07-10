@@ -1,17 +1,13 @@
 #include "stdafx.h"
 #include "Player.h"
-#include "Game.h"
-#include "sound/SoundEngine.h"2
+
+#include "sound/SoundEngine.h"
 #include "sound/SoundSource.h"
 
-Player::~Player()
-{
-
-}
+#include "Game.h"
 
 bool Player::Start()
 {
-	//アニメーションクリップをロードする。
 	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/idle.tka");
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Walk].Load("Assets/animData/walk.tka");
@@ -19,10 +15,8 @@ bool Player::Start()
 	m_animationClips[enAnimationClip_Jump].Load("Assets/animData/jump.tka");
 	m_animationClips[enAnimationClip_Jump].SetLoopFlag(false);
 
-	//ユニティちゃんのモデルを読み込む。
 	m_modelRender.Init("Assets/modelData/unityChan.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisY);
 
-	//キャラコンを初期化する。
 	m_characterController.Init(25.0f, 75.0f, m_position);
 
 	g_soundEngine->ResistWaveFileBank(3, "Assets/sound/jump.wav");//ジャンプの音
@@ -32,20 +26,17 @@ bool Player::Start()
 	return true;
 }
 
-//更新処理。
 void Player::Update()
 {
-	Move();					//移動処理。
-	Rotation();				//回転処理。
-	ManageState();			//ステート管理。
-	PlayAnimation();		//アニメーションの再生。
-	m_modelRender.Update();	//絵描きさんの更新処理。
+	Move();
+	Rotation();
+	ManageState();
+	PlayAnimation();
+	m_modelRender.Update();
 }
 
-//描画処理。
 void Player::Render(RenderContext& rc)
 {
-	//ユニティちゃんを描画する。
 	m_modelRender.Draw(rc);
 }
 
@@ -57,7 +48,7 @@ void Player::Render(RenderContext& rc)
 
 void Player::Move()
 {
-	if (m_game->m_gameStartFlag == true) {
+	if (m_game->GetGameStartFlag()) {
 
 		//xzの移動速度を0.0fにする。
 		m_moveSpeed.x = 0.0f;
@@ -82,24 +73,21 @@ void Player::Move()
 		//移動速度にスティックの入力量を加算する。
 		m_moveSpeed += right + forward;
 
-		//地面に付いていたら。
 		if (m_characterController.IsOnGround())
 		{
 			//重力を無くす。
 			m_moveSpeed.y = 0.0f;
-			//Aボタンが押されたら。
+
 			if (g_pad[0]->IsTrigger(enButtonA))
 			{
 				//ジャンプさせる。
 				m_moveSpeed.y = 240.0f;
 
-				if (m_game->m_gameEndFlag == false) {
-					//ジャンプの音を鳴らす。
-					SoundSource* se = NewGO<SoundSource>(0);
-					se->Init(3);
-					se->Play(false);	//効果音はループさせないので、falseにする。
-					se->SetVolume(3.5f);//音量を上げる。
-				}
+				//ジャンプの音を鳴らす。
+				SoundSource* se = NewGO<SoundSource>(0);
+				se->Init(3);
+				se->Play(false);	//効果音はループさせないので、falseにする。
+				se->SetVolume(3.5f);//音量を上げる。
 			}
 		}
 		//地面に付いていなかったら。

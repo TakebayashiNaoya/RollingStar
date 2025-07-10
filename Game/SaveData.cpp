@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "SaveData.h"
+
 #include "json.hpp"
 #include <iostream>
 #include <fstream>
@@ -24,11 +25,6 @@ bool SaveData::Start()
 	Seriarize();
 
 	return true;
-}
-
-void SaveData::Update()
-{
-
 }
 
 void SaveData::Seriarize()

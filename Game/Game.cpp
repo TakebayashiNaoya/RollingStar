@@ -1,18 +1,20 @@
 #include "stdafx.h"
 #include "Game.h"
-#include "Player.h"
-#include "GameCamera.h"
-#include "BackGround.h"
+
 #include "sound/SoundEngine.h"
 #include "sound/SoundSource.h"
-#include "Star.h"
-#include "Transform.h"
-#include "Score.h"
+
+#include "BackGround.h"
+#include "GameCamera.h"
 #include "GameTimer.h"
-#include "ResultView.h"
-#include "StarSpawner.h"
-#include "PopScoreManager.h"
 #include "LoadingView.h"
+#include "Player.h"
+#include "PopScoreManager.h"
+#include "ResultView.h"
+#include "Score.h"
+#include "Star.h"
+#include "StarSpawner.h"
+#include "Transform.h"
 
 namespace
 {
@@ -29,21 +31,20 @@ Game::Game()
 
 Game::~Game()
 {
-	//スタースポナーと残っている星をデリート
 	for (auto star : FindGOs<Star>("star")) {
 		DeleteGO(star);
 	}
 	for (auto starSpawner : FindGOs<StarSpawner>("starspawner")) {
 		DeleteGO(starSpawner);
 	}
-
-	DeleteGO(m_popScoreManager);
-	DeleteGO(m_gameBGM);
 	DeleteGO(m_backGround);
-	DeleteGO(m_gameTimer);
+	DeleteGO(m_skyCube);
+	DeleteGO(m_gameBGM);
 	DeleteGO(m_score);
-	DeleteGO(m_gameCamera);
 	DeleteGO(m_player);
+	DeleteGO(m_gameTimer);
+	DeleteGO(m_gameCamera);
+	DeleteGO(m_popScoreManager);
 }
 
 bool Game::Start()
@@ -55,6 +56,7 @@ bool Game::Start()
 		InitLevelObjectDataList();
 
 		m_loadingView = FindGO<LoadingView>("loadingview");
+
 		//ロード1/6到達
 		m_loadingView->showLoadingPhases[LoadingView::EnLoadingPhase::enLoadingPhase_1] = true;
 
@@ -65,21 +67,13 @@ bool Game::Start()
 	case enGameNewGOType_Step1:
 	{
 		InitSky();
-		m_popScoreManager = NewGO<PopScoreManager>(0, "popscoremanager");
-		m_player = NewGO<Player>(0, "player");
-		m_gameCamera = NewGO<GameCamera>(0, "gamecamera");
+		InitBGM();
 		m_score = NewGO<Score>(0, "score");
-		m_resultView = NewGO<ResultView>(0, "resultview");
-
-		//制限時間を取得するためにゲームタイマーをFindGO
+		m_player = NewGO<Player>(0, "player");
 		m_gameTimer = NewGO<GameTimer>(0, "gametimer");
-
-		//ゲームBGM
-		g_soundEngine->ResistWaveFileBank(1, "Assets/sound/inGame.wav");
-		m_gameBGM = NewGO<SoundSource>(0);
-		m_gameBGM->Init(1);
-		m_gameBGM->Play(true);
-		m_gameBGM->SetVolume(0.5f);
+		m_gameCamera = NewGO<GameCamera>(0, "gamecamera");
+		m_resultView = NewGO<ResultView>(0, "resultview");
+		m_popScoreManager = NewGO<PopScoreManager>(0, "popscoremanager");
 
 		//ロード2/6到達
 		m_loadingView->showLoadingPhases[LoadingView::EnLoadingPhase::enLoadingPhase_2] = true;
@@ -99,22 +93,24 @@ bool Game::Start()
 				m_objDataListIndex++;
 			}
 
+			//ロード3/6到達
 			if (m_objDataListIndex > m_levelObjectDataList.size() / 4) {
-				//ロード3/6到達
 				m_loadingView->showLoadingPhases[LoadingView::EnLoadingPhase::enLoadingPhase_3] = true;
 			}
+
+			//ロード4/6到達
 			if (m_objDataListIndex > m_levelObjectDataList.size() / 4 * 2) {
-				//ロード4/6到達
 				m_loadingView->showLoadingPhases[LoadingView::EnLoadingPhase::enLoadingPhase_4] = true;
 			}
+
+			//ロード5/6到達
 			if (m_objDataListIndex > m_levelObjectDataList.size() / 4 * 3) {
-				//ロード5/6到達
 				m_loadingView->showLoadingPhases[LoadingView::EnLoadingPhase::enLoadingPhase_5] = true;
 			}
 
 			return false;
 		}
-		break;	// Stepが増えたらbreakを消す
+		break;
 	}
 	}
 
@@ -127,13 +123,15 @@ bool Game::Start()
 //更新処理。
 void Game::Update()
 {
-	if (m_gameTimer->m_timeLimit < 0) {
-		m_gameStartFlag = false;
-		m_gameEndFlag = true;
-		m_resultView->m_isFlag = true;
+	if (m_gameTimer->GetTimeLimit() < 0) {
+		m_isGameStartFlag = false;
+		m_isGameEndFlag = true;
 	}
 }
 
+///////////////////////////////////////////////////////////////////
+// ここからメソッドまとめ。
+///////////////////////////////////////////////////////////////////
 
 void Game::InitSky()
 {
@@ -146,6 +144,15 @@ void Game::InitSky()
 
 	//環境光の計算のためのIBLテクスチャをセットする。
 	g_renderingEngine->SetAmbientByIBLTexture(m_skyCube->GetTextureFilePath(), 0.1f);
+}
+
+void Game::InitBGM()
+{
+	g_soundEngine->ResistWaveFileBank(1, "Assets/sound/inGame.wav");
+	m_gameBGM = NewGO<SoundSource>(0);
+	m_gameBGM->Init(1);
+	m_gameBGM->Play(true);
+	m_gameBGM->SetVolume(0.5f);
 }
 
 void Game::InitLevelObjectDataList()

@@ -1,27 +1,21 @@
 #include "stdafx.h"
 #include "PopScore.h"
+
+#include "PopScoreManager.h"
 #include "Score.h"
 #include "Star.h"
 #include "Type.h"
-#include "PopScoreManager.h"
 
 namespace {
 	float const MOVE_SPEED = 150.0f;
-}
-
-PopScore::PopScore()
-{
-}
-
-PopScore::~PopScore()
-{
+	float const FADE_DURATION = 1.0f;
 }
 
 bool PopScore::Start()
 {
 	m_popScoreManager = FindGO<PopScoreManager>("popscoremanager");
 
-	switch (m_popScoreManager->colorChecker)
+	switch (m_popScoreManager->GetColorChecker())
 	{
 	case enStarKinds_Red:
 		m_setPoint = RED_STAR_POINT;
@@ -61,10 +55,7 @@ bool PopScore::Start()
 		break;
 	}
 
-	wchar_t tmp2[256];
-	swprintf_s(tmp2, 256, L"+%d", m_setPoint);
-	m_popScoreFontRender.SetText(tmp2);			//テキスト表示
-	m_popScoreFontRender.SetScale(m_setScale);	//サイズ
+	SetTextOption(m_setPos.x, m_setPos.y, m_setScale, m_setColor, &m_popScoreFontRender, L"+%d", m_setPoint);
 
 	return true;
 }
@@ -81,7 +72,7 @@ void PopScore::Update()
 	FadingColorCalc();
 	m_popScoreFontRender.SetColor(m_fadingColor);
 
-	if (m_fadeTimer >= m_fadeDuration) {
+	if (m_fadeTimer >= FADE_DURATION) {
 		DeleteGO(this);
 	}
 }
@@ -94,8 +85,8 @@ void PopScore::Render(RenderContext& rc)
 //フェードアウトの色計算
 void PopScore::FadingColorCalc()
 {
-	m_fadingColor.r = m_setColor.r * (1 - m_fadeTimer / m_fadeDuration);
-	m_fadingColor.b = m_setColor.b * (1 - m_fadeTimer / m_fadeDuration);
-	m_fadingColor.g = m_setColor.g * (1 - m_fadeTimer / m_fadeDuration);
-	m_fadingColor.a = m_setColor.a * (1 - m_fadeTimer / m_fadeDuration);
+	m_fadingColor.r = m_setColor.r * (1 - m_fadeTimer / FADE_DURATION);
+	m_fadingColor.b = m_setColor.b * (1 - m_fadeTimer / FADE_DURATION);
+	m_fadingColor.g = m_setColor.g * (1 - m_fadeTimer / FADE_DURATION);
+	m_fadingColor.a = m_setColor.a * (1 - m_fadeTimer / FADE_DURATION);
 }

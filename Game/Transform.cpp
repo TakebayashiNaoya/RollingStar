@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Transform.h"
 
-
 Transform::Transform()
 	:m_position(Vector3::Zero)
 	, m_localPosition(Vector3::Zero)

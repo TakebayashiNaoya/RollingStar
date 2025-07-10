@@ -1,18 +1,8 @@
 #include "stdafx.h"
 #include "Score.h"
-#include"Star.h"
+
 #include"Game.h"
-#include"Type.h"
-
-Score::Score()
-{
-
-}
-
-Score::~Score()
-{
-
-}
+#include"Star.h"
 
 bool Score::Start()
 {
@@ -21,11 +11,7 @@ bool Score::Start()
 
 	SpriteRenderList();
 
-	//「スコア」表示
-	m_scoreFontRender.SetText(L"スコア");					//テキスト表示
-	m_scoreFontRender.SetPosition(400.0f, 500.0f, 0.0f);	//座標
-	m_scoreFontRender.SetScale(1.5f);						//サイズ
-	m_scoreFontRender.SetColor(g_vec4Yellow);				//色
+	SetTextOption(400.0f, 500.0f, 1.5f, g_vec4Yellow, &m_scoreFontRender, L"スコア");
 
 	return true;
 }
@@ -34,23 +20,13 @@ void Score::Update()
 {
 	/*チュートリアル～リザルトの間、常にステージとプレイヤーは表示する。
 	　インゲーム（スタート～終了）の間だけスコアを表示するためにフラグで管理する。*/
-	if (m_game->m_gameEndFlag == true) { return; }		//ゲーム終了のフラグ
-	if (m_game->m_gameStartFlag == false) { return; }	//ゲーム開始のフラグ
+	if (m_game->GetGameEndFlag()) { return; }				//ゲーム終了のフラグ
+	if (m_game->GetGameStartFlag() == false) { return; }	//ゲーム開始のフラグ
 
-	//合計スコア計算
 	TotalScoreCalc();
 
-	//合計スコア表示
-	wchar_t tmp[256];
-	swprintf_s(tmp, 256, L"%d", m_totalScore);
-	m_totalScoreFontRender.SetText(tmp);
-	m_totalScoreFontRender.SetPosition({ 410.0f,430.0f ,0.0f });
-	m_totalScoreFontRender.SetScale(1.5f);
-	m_totalScoreFontRender.SetColor(g_vec4Yellow);
+	SetTextOption(410.0f, 430.0f, 1.5f, g_vec4Yellow, &m_totalScoreFontRender, L"%d", m_totalScore);
 
-	/// <summary>
-	/// テキスト設定。
-	/// </summary>
 	/// {表示したい変数(intのみ) , x座標 , y座標 , サイズ , 色}
 	FontOption text[StarKinds_Num];
 	text[enStarKinds_Red] = { m_starCount[enStarKinds_Red],-850.0f,420.0f,1.3f,g_vec4White };
@@ -60,21 +36,15 @@ void Score::Update()
 	text[enStarKinds_Green] = { m_starCount[enStarKinds_Green],-850.0f,220.0f,1.3f,g_vec4White };
 	text[enStarKinds_Normal] = { m_starCount[enStarKinds_Normal],-850.0f,170.0f,1.3f,g_vec4White };
 
-	for (int i = 0; i < StarKinds_Num; i++)
-	{
-		wchar_t tmp[256];
-		swprintf_s(tmp, 256, L"%d", text[i].data);
-		m_getStarCountFontRender[i].SetText(tmp);										//テキスト表示
-		m_getStarCountFontRender[i].SetPosition({ text[i].pos_x,text[i].pos_y ,0 });	//座標
-		m_getStarCountFontRender[i].SetScale(text[i].scale);							//サイズ
-		m_getStarCountFontRender[i].SetColor(text[i].textColor);						//色
+	for (int i = 0; i < StarKinds_Num; i++) {
+		SetTextOption(text[i].pos_x, text[i].pos_y, text[i].scale, text[i].textColor, &m_getStarCountFontRender[i], L"%d", text[i].data);
 	}
 }
 
 void Score::Render(RenderContext& rc)
 {
-	if (m_game->m_gameEndFlag == false) {
-		if (m_game->m_gameStartFlag == true) {
+	if (m_game->GetGameEndFlag() == false) {
+		if (m_game->GetGameStartFlag()) {
 
 			m_scoreFontRender.Draw(rc);
 			m_totalScoreFontRender.Draw(rc);
