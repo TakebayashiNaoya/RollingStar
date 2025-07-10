@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "StarSpawner.h"
+
+#include "BackGround.h"
 #include "Star.h"
 #include "Transform.h"
-#include "BackGround.h"
 
 namespace {
 	const float RESPAWN_TIME = 3.0f;

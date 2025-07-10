@@ -1,8 +1,25 @@
 #include "stdafx.h"
 #include "CountDown.h"
-#include "Game.h"
+
 #include "sound/SoundEngine.h"
 #include "sound/SoundSource.h"
+
+#include "Game.h"
+
+namespace
+{
+	struct CountDownData
+	{
+		const float targetTime;
+		SpriteRender* spriteRender;
+		// 
+		CountDownData(const float time, SpriteRender* render)
+			: targetTime(time)
+			, spriteRender(render)
+		{
+		}
+	};
+}
 
 CountDown::CountDown()
 {
@@ -19,7 +36,7 @@ CountDown::CountDown()
 
 CountDown::~CountDown()
 {
-	m_game->m_gameStartFlag = true;
+	m_game->SetGameStartFlag(true);
 }
 
 bool CountDown::Start()
@@ -36,27 +53,33 @@ bool CountDown::Start()
 
 void CountDown::Update()
 {
-	countDown += g_gameTime->GetFrameDeltaTime();		//秒数カウント
+	countDown += g_gameTime->GetFrameDeltaTime();
 
-	if (countDown >= 0.0f and countDown < 1.0f) {		//3
-		m_spriteRender = &m_count3SpriteRender;
-	}
-	else if (countDown >= 1.0f and countDown < 2.0f) {	//2
-		m_spriteRender = &m_count2SpriteRender;
-	}
-	else if (countDown >= 2.0f and countDown < 3.0f) {	//1
-		m_spriteRender = &m_count1SpriteRender;
-	}
-	else if (countDown >= 3.0f and countDown < 4.0f) {	//スタート
-		m_spriteRender = &m_countStartSpriteRender;
-	}
-	else if (countDown >= 4.0f) {						//インゲームへ
+	SpriteRender* spriteRender = ComputeSpriteRender();
+	if (spriteRender == nullptr) {
 		DeleteGO(this);
 	}
-
+	m_spriteRender = spriteRender;
 }
 
 void CountDown::Render(RenderContext& rc)
 {
 	m_spriteRender->Draw(rc);
+}
+
+SpriteRender* CountDown::ComputeSpriteRender()
+{
+	CountDownData dataList[] = {
+		CountDownData(1.0f, &m_count3SpriteRender),
+		CountDownData(2.0f, &m_count2SpriteRender),
+		CountDownData(3.0f, &m_count1SpriteRender),
+		CountDownData(4.0f, &m_countStartSpriteRender),
+	};
+
+	for (CountDownData& data : dataList) {
+		if (countDown < data.targetTime) {
+			return data.spriteRender;
+		}
+	}
+	return nullptr;
 }

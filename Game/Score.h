@@ -1,37 +1,45 @@
 #pragma once
 #include "Type.h"
 
-class Star;
 class Game;
+class Star;
 
 class Score : public IGameObject
 {
 public:
-	Score();
-	~Score();
 	bool Start() override;
 	void Update() override;
 	void Render(RenderContext& rc) override;
+
+public:
+	int GetTotalScore()
+	{
+		return m_totalScore;
+	}
+	int GetStarCount(int a)
+	{
+		return m_starCount[a];
+	}
+	void StarCountIncrease(int a)
+	{
+		m_starCount[a]++;
+	}
+
+private:
 	void SpriteRenderList();
 	void TotalScoreCalc();
 
-	//メンバ変数
-	Star* m_star = nullptr;
+private:
 	Game* m_game = nullptr;
+	Star* m_star = nullptr;
 
+private:
 	SpriteRender m_starSpriteRender[StarKinds_Num];
+	SpriteRender m_spriteRender[StarKinds_Num];
+	FontRender m_getStarCountFontRender[StarKinds_Num];
+	FontRender m_totalScoreFontRender;
+	FontRender m_scoreFontRender;
 
-	int m_starCount[StarKinds_Num];
-
-	int m_totalScore = 0;		//トータルスコア
-	int m_orangeStarCount = 0;	//オレンジスター
-	int m_purpleStarCount = 0;	//パープルスター
-	int m_blueStarCount = 0;	//ブルースター
-	int m_greenStarCount = 0;	//グリーンスター
-	int m_normalStarCount = 0;	//ノーマルスター
-
-
-	//フォントオプション
 	struct FontOption {
 		int data = 0;		//表示したい変数
 		float pos_x = 0.0f;	//x座標
@@ -40,10 +48,7 @@ public:
 		Vector4 textColor;	//色
 	};
 
-
-	FontRender m_scoreFontRender;		//「スコア」と表示	
-	FontRender m_totalScoreFontRender;	//合計スコアを表示
-	FontRender m_getStarCountFontRender[StarKinds_Num];
-	SpriteRender m_spriteRender[StarKinds_Num];
+	int m_starCount[StarKinds_Num];
+	int m_totalScore = 0;
 };
 

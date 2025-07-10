@@ -1,20 +1,11 @@
 #include "stdafx.h"
 #include "BackGround.h"
-#include"Transform.h"
-#include"Game.h"
 
-class Transform;
-//test
+#include"Game.h"
+#include"Transform.h"
+
 namespace
 {
-	/**
-	 * ここは定数を書く箇所
-	 * 定数の変数を書くときの注意点
-	 *		型名の前に「const」をつける　例：const 型名 変数名 = 1.0f;
-	 *		単語区切りでアンダーバーをつける
-	 *		全部大文字
-	 *		詳しくはゲームプログラミング教材のextraに書いてるのでチェック！！
-	 */
 	const float SPEED_POWER = 0.4f;	//回転スピード
 }
 
@@ -47,9 +38,18 @@ void BackGround::Update()
 	m_modelRender.Update();
 }
 
+void BackGround::Render(RenderContext& rc)
+{
+	m_modelRender.Draw(rc);
+}
+
+///////////////////////////////////////////////////////////////////
+// ここからメソッドまとめ。
+///////////////////////////////////////////////////////////////////
+
 void BackGround::Rotation()
 {
-	if (m_game->m_gameStartFlag == false) {
+	if (m_game->GetGameStartFlag() == false) {
 		return;
 	}
 
@@ -103,9 +103,4 @@ void BackGround::Rotation()
 
 	//絵描きさんに回転を教える。
 	m_modelRender.SetRotation(m_rotationQuat);
-}
-
-void BackGround::Render(RenderContext& rc)
-{
-	m_modelRender.Draw(rc);
 }

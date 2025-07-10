@@ -1,35 +1,36 @@
+///
+/// 地面となるクラス
+///
 #pragma once
 
-class Transform;
 class Game;
+class Transform;
 
 class BackGround : public IGameObject
 {
 public:
 	BackGround();
 	~BackGround();
-	bool Start();
-	void Update();
+	bool Start()override;
+	void Update()override;
+	void Render(RenderContext& rc)override;
+
+private:
 	void Rotation();
 
-	void Render(RenderContext& rc);
-
+public:
 	Transform* GetTransform()
 	{
 		return m_transform;
 	}
 
 private:
+	Game* m_game = nullptr;
+	Transform* m_transform = nullptr;
+
+private:
 	ModelRender m_modelRender;
 	PhysicsStaticObject m_physicsStaticObject;
-	Quaternion m_rotation;
 	Quaternion m_rotationQuat = Quaternion::Identity;	//初期回転を単位Quaternion（無回転）で初期化
-	Vector3 m_moveSpeed = Vector3(0.0f, 0.0f, 0.0f);
-	// ↑と同じ意味
-	//const Vector3 moveSpeedReset = Vector3::Zero;
-
-	Vector3 m_rotationVelocity = Vector3::Zero;
-	Vector3 m_position = Vector3::Zero;
-	Transform* m_transform = nullptr;
-	Game* m_game;
+	Vector3 m_moveSpeed = Vector3::Zero;
 };

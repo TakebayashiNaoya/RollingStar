@@ -1,21 +1,26 @@
+///
+/// チュートリアルを管理するクラス
+///
 #pragma once
+
+class CountDown;
 class Game;
 class GameTimer;
-class CountDown;
 
 class Tutorial :public IGameObject
 {
 public:
-	Tutorial();
 	~Tutorial();
-	bool Start();
-	void Update();
-	void Render(RenderContext& rc);
+	bool Start()override;
+	void Update()override;
+	void Render(RenderContext& rc)override;
 
-	//メンバ変数
-	Game* m_game;
-	GameTimer* m_gameTimer;
-	CountDown* m_countDown;
+private:
+	Game* m_game = nullptr;
+	GameTimer* m_gameTimer = nullptr;
+	CountDown* m_countDown = nullptr;
+
+private:
 	SpriteRender m_spriteRender;
 	FontRender m_fontRender;
 	bool m_startFlag = false;

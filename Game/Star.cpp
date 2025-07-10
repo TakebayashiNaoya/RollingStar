@@ -1,16 +1,25 @@
 #include "stdafx.h"
 #include "Star.h"
-#include "Transform.h"
-#include "Player.h"
-#include "Score.h"
-#include "Game.h"
-#include "Type.h"
-#include "PopScoreManager.h"
+
 #include "sound/SoundEngine.h"
 #include "sound/SoundSource.h"
 
+#include "Game.h"
+#include "Player.h"
+#include "PopScoreManager.h"
+#include "Score.h"
+#include "Transform.h"
+#include "Type.h"
+
 namespace {
 	const float GET_STAR_LENGTH = 200.0f;
+
+	const int PERCENT_SCALE = 100;
+	const int COLOR_PROBABILITY_RED = 1;
+	const int COLOR_PROBABILITY_ORANGE = 5;
+	const int COLOR_PROBABILITY_PURPLE = 10;
+	const int COLOR_PROBABILITY_BLUE = 15;
+	const int COLOR_PROBABILITY_GREEN = 30;
 };
 
 Star::~Star()
@@ -52,23 +61,16 @@ void Star::Render(RenderContext& rc)
 // ここからメソッドまとめ。
 ///////////////////////////////////////////////////////////////////
 
-
-/// <summary>
-/// スターカラー確率
-/// </summary>
 void Star::SetStarColor()
 {
-	if (rand() % 100 < 1) { starColor = enStarKinds_Red; }
-	else if (rand() % 100 < 5) { starColor = enStarKinds_Orange; }
-	else if (rand() % 100 < 10) { starColor = enStarKinds_Purple; }
-	else if (rand() % 100 < 15) { starColor = enStarKinds_Blue; }
-	else if (rand() % 100 < 30) { starColor = enStarKinds_Green; }
+	if (rand() % PERCENT_SCALE < COLOR_PROBABILITY_RED) { starColor = enStarKinds_Red; }
+	else if (rand() % PERCENT_SCALE < COLOR_PROBABILITY_ORANGE) { starColor = enStarKinds_Orange; }
+	else if (rand() % PERCENT_SCALE < COLOR_PROBABILITY_PURPLE) { starColor = enStarKinds_Purple; }
+	else if (rand() % PERCENT_SCALE < COLOR_PROBABILITY_BLUE) { starColor = enStarKinds_Blue; }
+	else if (rand() % PERCENT_SCALE < COLOR_PROBABILITY_GREEN) { starColor = enStarKinds_Green; }
 	else { starColor = enStarKinds_Normal; }
 }
 
-/// <summary>
-/// スターのカラー毎の設定
-/// </summary>
 void Star::SetInit()
 {
 	switch (starColor)
@@ -94,70 +96,33 @@ void Star::SetInit()
 	}
 }
 
-/// <summary>
-/// スター取得の処理
-/// </summary>
 void Star::GetStar()
 {
-	Vector3 diff = m_transform->m_position - m_player->m_position;
+	Vector3 diff = m_transform->m_position - m_player->GetPosition();
 
-	if (m_game->m_gameStartFlag) {
+	if (m_game->GetGameStartFlag()) {
 		//プレイヤーと☆の距離が150.0fより小さかったら。
 		const float distnce = diff.Length();
 		if (distnce <= GET_STAR_LENGTH)
 		{
 			GetStarSE();		//スター取得SE
 
-			GetStarCounter();	//スター取得カウント
+			m_score->StarCountIncrease(starColor);
 
 			isDead = true;		//スポナーにスターが消えたことを伝える
 
-			m_popScoreManager->isPopFlag = true;//スコアをポップさせる
-			m_popScoreManager->colorChecker = starColor;
+			m_popScoreManager->SetPopFlag(true);//スコアをポップさせる
+			m_popScoreManager->SetColorChecker(starColor);
 		}
 	}
 }
 
-/// <summary>
-/// スター取得のSE
-/// </summary>
 void Star::GetStarSE()
 {
 	SoundSource* se = NewGO<SoundSource>(0);
 	se->Init(2);
 	se->Play(false);
 	se->SetVolume(3.5f);
-}
-
-/// <summary>
-/// スター取得カウント
-/// </summary>
-void Star::GetStarCounter()
-{
-	if (m_game->m_gameEndFlag == false)
-	{
-		switch (starColor)
-		{
-		case enStarKinds_Red:
-			m_score->m_starCount[enStarKinds_Red]++;
-			break;
-		case enStarKinds_Orange:
-			m_score->m_starCount[enStarKinds_Orange]++;
-			break;
-		case enStarKinds_Purple:
-			m_score->m_starCount[enStarKinds_Purple]++;
-			break;
-		case enStarKinds_Blue:
-			m_score->m_starCount[enStarKinds_Blue]++;
-			break;
-		case enStarKinds_Green:
-			m_score->m_starCount[enStarKinds_Green]++;
-			break;
-		case enStarKinds_Normal:
-			m_score->m_starCount[enStarKinds_Normal]++;
-			break;
-		}
-	}
 }
 
 void Star::Rotation()

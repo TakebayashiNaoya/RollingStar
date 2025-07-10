@@ -1,3 +1,6 @@
+///
+/// ゲーム終了画面、リザルト画面、ランキング画面を管理するクラス
+///
 #pragma once
 #include "Type.h"
 
@@ -6,65 +9,22 @@ class Game;
 class GameCamera;
 class GameTimer;
 class Player;
+class SaveData;
 class Score;
 class Star;
 class Title;
-class SaveData;
 
 //ゲームクリア。
 class ResultView : public IGameObject
 {
-public:
-	~ResultView();
-	bool Start();
-	void Update();
-	void Render(RenderContext& rc);
-
-	void RankingUI_InitSetList();
-	void SetScoreFontRender();
-	void SetTotalScoreFontRender();
-	void SetGotStarCountFontRender();
-	void SetScoreOfRankFontRenderList();
-
-	void EndSE();
-	void CallSE();
-	void TriggerSE();
-
-	//メンバ変数。
-	BackGround* m_backGround = nullptr;
-	Game* m_game = nullptr;
-	GameCamera* m_gameCamera = nullptr;
-	GameTimer* m_gameTimer = nullptr;
-	Player* m_player = nullptr;
-	Score* m_score = nullptr;
-	Star* m_star = nullptr;
-	Title* m_title = nullptr;
-	SaveData* m_saveData = nullptr;
-
-	//写したり消したりが面倒くさいので、常時表示しているm_spriteRenderに入れて切り替える。
-	SpriteRender m_endSpriteRender;
-	SpriteRender m_resultSpriteRender;
-	SpriteRender m_backScreenSpriteRender;
-	SpriteRender* m_spriteRender;
-
-
-
-
-	float m_timerToResult = 0.0f;
-	bool m_isFlag = false;
-	int endState = 0;
-	int callState = 0;
-	int saveState = 0;
-
-	//画面の切り替えをステート管理
-	int m_viewState = enViewStates_GameEnd;
+private:
 	enum EnViewStates {
 		enViewStates_GameEnd,	//ゲーム終了画面を表示
 		enViewStates_Result,	//リザルト画面を表示
 		enViewStates_Rankings	//ランキングを表示
 	};
 
-	//ランキング画面で表示するUI(スプライト)のRender配列と識別用enum
+	//ランキング画面で表示するUI(スプライト)の識別用enum
 	enum EnSpritesForRankingView {
 		enSpritesForRankingView_Ranking,
 		enSpritesForRankingView_GoldCrown,
@@ -73,10 +33,53 @@ public:
 		enSpritesForRankingView_PushA,
 		SpritesForRankingView_Num
 	};
-	SpriteRender m_spritesForRankingView[SpritesForRankingView_Num];
 
-	FontRender m_totalScoreFontRender;	//合計スコアを表示
+	enum EnRanking {
+		enRanking_1st,
+		enRanking_2nd,
+		enRanking_3rd,
+		Ranking_Num
+	};
+
+public:
+	~ResultView();
+	bool Start()override;
+	void Update()override;
+	void Render(RenderContext& rc)override;
+
+private:
+	void RankingUI_InitSetList();
+	void SetTotalScoreFontRender();
+	void SetGotStarCountFontRender();
+	void SetScoreOfRankFontRenderList();
+
+	void EndSE();
+	void CallSE();
+	void TriggerSE();
+
+private:
+	BackGround* m_backGround = nullptr;
+	Game* m_game = nullptr;
+	GameCamera* m_gameCamera = nullptr;
+	GameTimer* m_gameTimer = nullptr;
+	Player* m_player = nullptr;
+	SaveData* m_saveData = nullptr;
+	Score* m_score = nullptr;
+	Star* m_star = nullptr;
+	Title* m_title = nullptr;
+
+private:
+	//常時表示しているm_spriteRenderに入れて切り替える。
+	SpriteRender m_endSpriteRender;
+	SpriteRender m_resultSpriteRender;
+	SpriteRender m_backScreenSpriteRender;
+	SpriteRender* m_spriteRender = nullptr;
+
+	EnViewStates m_viewState = enViewStates_GameEnd;
+	SpriteRender m_spritesForRankingView[SpritesForRankingView_Num];
+	FontRender m_totalScoreFontRender;
 	FontRender m_gotStarCountFontRenderList[StarKinds_Num];
+	FontRender m_scoreOfRankFontRenderList[3];
 
 	//スターの獲得数を表示するための構造体
 	struct FontOption {
@@ -87,12 +90,10 @@ public:
 		Vector4 textColor;	//色
 	};
 
-	//上位3つのランキング
-	enum EnRanking {
-		enRanking_1st,
-		enRanking_2nd,
-		enRanking_3rd,
-		Ranking_Num
-	};
-	FontRender m_scoreOfRankFontRenderList[3];
+	float m_timerToResult = 0.0f;
+
+	//Updateの中で一度だけ処理するためのフラグ
+	bool onceEndSE = true;
+	bool onceCallSE = true;
+	bool onceSaveScore = true;
 };
