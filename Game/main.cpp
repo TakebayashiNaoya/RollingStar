@@ -8,6 +8,7 @@
 #include "Title.h"
 
 #include "SaveData.h"
+#include "SoundManager.h"
 
 
 void ReportLiveObjects()
@@ -38,11 +39,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//ワイヤーフレーム描画
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
+	//NewGO<SoundManager>(0, "soundmanager");
+
 	//セーブデータクラスのオブジェクトを作成
 	NewGO<SaveData>(0, "savedata");
 
 	//Gameクラスのオブジェクトを作成。
-	NewGO<Title>(0, "title");
+	NewGO<Title>(1, "title");
 
 	//////////////////////////////////////
 	// 初期化を行うコードを書くのはここまで！！！

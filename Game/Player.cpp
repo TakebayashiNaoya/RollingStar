@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "Player.h"
 
-#include "sound/SoundEngine.h"
-#include "sound/SoundSource.h"
+#include "SoundManager.h"
 
 #include "Game.h"
 
@@ -18,8 +17,6 @@ bool Player::Start()
 	m_modelRender.Init("Assets/modelData/unityChan.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisY);
 
 	m_characterController.Init(25.0f, 75.0f, m_position);
-
-	g_soundEngine->ResistWaveFileBank(3, "Assets/sound/jump.wav");//ジャンプの音
 
 	m_game = FindGO<Game>("game");
 
@@ -84,10 +81,7 @@ void Player::Move()
 				m_moveSpeed.y = 240.0f;
 
 				//ジャンプの音を鳴らす。
-				SoundSource* se = NewGO<SoundSource>(0);
-				se->Init(3);
-				se->Play(false);	//効果音はループさせないので、falseにする。
-				se->SetVolume(3.5f);//音量を上げる。
+				SoundNewGO(enSoundList_JumpSE);
 			}
 		}
 		//地面に付いていなかったら。

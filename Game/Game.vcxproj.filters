@@ -53,5 +53,6 @@
     <ClInclude Include="LoadingView.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="SaveData.h" />
+    <ClInclude Include="SoundManager.h" />
   </ItemGroup>
 </Project>

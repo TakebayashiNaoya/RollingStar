@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "Star.h"
 
-#include "sound/SoundEngine.h"
-#include "sound/SoundSource.h"
+#include "SoundManager.h"
 
 #include "Game.h"
 #include "Player.h"
@@ -35,9 +34,6 @@ bool Star::Start()
 
 	SetStarColor();
 	SetInit();
-
-	//スター効果音
-	g_soundEngine->ResistWaveFileBank(2, "Assets/sound/star.wav");
 
 	return true;
 }
@@ -105,7 +101,7 @@ void Star::GetStar()
 		const float distnce = diff.Length();
 		if (distnce <= GET_STAR_LENGTH)
 		{
-			GetStarSE();		//スター取得SE
+			SoundNewGO(enSoundList_StarGetSE);
 
 			m_score->StarCountIncrease(starColor);
 
@@ -115,14 +111,6 @@ void Star::GetStar()
 			m_popScoreManager->SetColorChecker(starColor);
 		}
 	}
-}
-
-void Star::GetStarSE()
-{
-	SoundSource* se = NewGO<SoundSource>(0);
-	se->Init(2);
-	se->Play(false);
-	se->SetVolume(3.5f);
 }
 
 void Star::Rotation()

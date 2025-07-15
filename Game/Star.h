@@ -31,7 +31,6 @@ private:
 	void SetStarColor();
 	void SetInit();
 	void GetStar();
-	void GetStarSE();
 	void Rotation();
 
 private:

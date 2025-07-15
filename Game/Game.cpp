@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "Game.h"
 
-#include "sound/SoundEngine.h"
-#include "sound/SoundSource.h"
-
 #include "BackGround.h"
 #include "GameCamera.h"
 #include "GameTimer.h"
@@ -12,6 +9,7 @@
 #include "PopScoreManager.h"
 #include "ResultView.h"
 #include "Score.h"
+#include "SoundManager.h"
 #include "Star.h"
 #include "StarSpawner.h"
 #include "Transform.h"
@@ -39,12 +37,12 @@ Game::~Game()
 	}
 	DeleteGO(m_backGround);
 	DeleteGO(m_skyCube);
-	DeleteGO(m_gameBGM);
 	DeleteGO(m_score);
 	DeleteGO(m_player);
 	DeleteGO(m_gameTimer);
 	DeleteGO(m_gameCamera);
 	DeleteGO(m_popScoreManager);
+	SoundDeleteGO(enSoundList_InGameBGM);
 }
 
 bool Game::Start()
@@ -67,7 +65,9 @@ bool Game::Start()
 	case enGameNewGOType_Step1:
 	{
 		InitSky();
-		InitBGM();
+
+		SoundNewGO(enSoundList_InGameBGM);
+
 		m_score = NewGO<Score>(0, "score");
 		m_player = NewGO<Player>(0, "player");
 		m_gameTimer = NewGO<GameTimer>(0, "gametimer");
@@ -144,15 +144,6 @@ void Game::InitSky()
 
 	//環境光の計算のためのIBLテクスチャをセットする。
 	g_renderingEngine->SetAmbientByIBLTexture(m_skyCube->GetTextureFilePath(), 0.1f);
-}
-
-void Game::InitBGM()
-{
-	g_soundEngine->ResistWaveFileBank(1, "Assets/sound/inGame.wav");
-	m_gameBGM = NewGO<SoundSource>(0);
-	m_gameBGM->Init(1);
-	m_gameBGM->Play(true);
-	m_gameBGM->SetVolume(0.5f);
 }
 
 void Game::InitLevelObjectDataList()
