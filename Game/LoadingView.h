@@ -20,7 +20,6 @@ public:
 	bool showLoadingPhases[Phase_Num] = { false };
 
 public:
-	LoadingView();
 	~LoadingView();
 	bool Start()override;
 	void Update()override;

@@ -4,6 +4,7 @@
 #pragma once
 
 class Game;
+class SoundManager;
 
 class Title :public IGameObject
 {
@@ -23,6 +24,7 @@ public:
 private:
 	Game* m_game = nullptr;
 	SoundSource* m_titleBgm = nullptr;
+	SoundManager* m_soundManager;
 
 private:
 	EnTitleStep m_titleStep;

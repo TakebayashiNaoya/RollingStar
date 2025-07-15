@@ -1,16 +1,10 @@
 #include "stdafx.h"
 #include "LoadingView.h"
 
-#include "sound/SoundEngine.h"
-#include "sound/SoundSource.h"
+#include "SoundManager.h"
 
 #include "Tutorial.h"
 #include "Type.h"
-
-LoadingView::LoadingView()
-{
-	g_soundEngine->ResistWaveFileBank(6, "Assets/sound/push.wav");//ボタンSE
-}
 
 LoadingView::~LoadingView()
 {
@@ -39,8 +33,7 @@ bool LoadingView::Start()
 	m_LoadingPhaseSpriteRenders[enLoadingPhase_6].Init("Assets/sprite/neonRedStar.dds", 120.0f, 120.0f);
 	m_LoadingPhaseSpriteRenders[enLoadingPhase_6].SetPosition({ 317.0f, -393.5f, 0.0f });
 
-	for (int i = 0; i < Phase_Num; i++)
-	{
+	for (int i = 0; i < Phase_Num; i++) {
 		m_LoadingPhaseSpriteRenders[i].Update();
 	}
 
@@ -55,11 +48,7 @@ void LoadingView::Update()
 
 		if (g_pad[0]->IsTrigger(enButtonA))
 		{
-			//ボタンSE
-			SoundSource* se = NewGO<SoundSource>(0);
-			se->Init(6);
-			se->Play(false);
-			se->SetVolume(3.5f);
+			SoundNewGO(enSoundList_SelectSE);
 
 			DeleteGO(this);
 		}

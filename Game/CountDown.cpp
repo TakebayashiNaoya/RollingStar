@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "CountDown.h"
 
-#include "sound/SoundEngine.h"
-#include "sound/SoundSource.h"
+#include "SoundManager.h"
 
 #include "Game.h"
 
@@ -12,7 +11,7 @@ namespace
 	{
 		const float targetTime;
 		SpriteRender* spriteRender;
-		// 
+
 		CountDownData(const float time, SpriteRender* render)
 			: targetTime(time)
 			, spriteRender(render)
@@ -30,8 +29,6 @@ CountDown::CountDown()
 	m_countStartSpriteRender.Init("Assets/sprite/countStart.dds", 1920.0f, 1080.0f);	//カウントダウンスタート
 
 	m_spriteRender = &m_count3SpriteRender;
-
-	g_soundEngine->ResistWaveFileBank(4, "Assets/sound/countDownStart.wav");//カウントダウン開始の音
 }
 
 CountDown::~CountDown()
@@ -41,11 +38,7 @@ CountDown::~CountDown()
 
 bool CountDown::Start()
 {
-	//カウントダウン開始の音
-	SoundSource* se = NewGO<SoundSource>(0);
-	se->Init(4);
-	se->Play(false);
-	se->SetVolume(3.5f);
+	SoundNewGO(enSoundList_CountDownSE);
 
 	m_game = FindGO<Game>("game");
 	return true;

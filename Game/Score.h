@@ -40,7 +40,7 @@ private:
 	FontRender m_totalScoreFontRender;
 	FontRender m_scoreFontRender;
 
-	struct FontOption {
+	const struct FontOption {
 		int data = 0;		//•\¦‚µ‚½‚¢•Ï”
 		float pos_x = 0.0f;	//xÀ•W
 		float pos_y = 0.0f;	//yÀ•W

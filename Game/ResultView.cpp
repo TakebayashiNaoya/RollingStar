@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "ResultView.h"
 
-#include "sound/SoundEngine.h"
-#include "sound/SoundSource.h"
+#include "SoundManager.h"
 
 #include "BackGround.h"
 #include "Game.h"
@@ -35,10 +34,6 @@ bool ResultView::Start()
 
 	RankingUI_InitSetList();
 
-	g_soundEngine->ResistWaveFileBank(6, "Assets/sound/push.wav");		//ボタンSE
-	g_soundEngine->ResistWaveFileBank(7, "Assets/sound/result.wav");	//歓声SE
-	g_soundEngine->ResistWaveFileBank(5, "Assets/sound/end.wav");		//終了サウンド
-
 	m_game = FindGO<Game>("game");
 	m_gameTimer = FindGO<GameTimer>("gametimer");
 	m_score = FindGO<Score>("score");
@@ -62,7 +57,7 @@ void ResultView::Update()
 			//1回だけ終了サウンドを鳴らす
 			if (onceEndSE)
 			{
-				EndSE();
+				SoundNewGO(enSoundList_EndSE);
 				onceEndSE = false;
 			}
 
@@ -83,13 +78,13 @@ void ResultView::Update()
 
 			//1回だけ歓声SEを鳴らす
 			if (onceCallSE) {
-				CallSE();
+				SoundNewGO(enSoundList_CallSE);
 				onceCallSE = false;
 			}
 
 			if (g_pad[0]->IsTrigger(enButtonA))
 			{
-				TriggerSE();
+				SoundNewGO(enSoundList_SelectSE);
 
 				m_viewState = enViewStates_Rankings;
 			}
@@ -112,7 +107,7 @@ void ResultView::Update()
 
 			if (g_pad[0]->IsTrigger(enButtonA))
 			{
-				TriggerSE();
+				SoundNewGO(enSoundList_SelectSE);
 
 				m_title = NewGO<Title>(0, "title");
 
@@ -214,28 +209,3 @@ void ResultView::SetScoreOfRankFontRenderList()
 		}
 	}
 }
-
-void ResultView::EndSE()
-{
-	SoundSource* endSE = NewGO<SoundSource>(0);
-	endSE->Init(5);
-	endSE->Play(false);
-	endSE->SetVolume(3.5f);
-}
-
-void ResultView::CallSE()
-{
-	SoundSource* callSE = NewGO<SoundSource>(0);
-	callSE->Init(7);
-	callSE->Play(false);
-	callSE->SetVolume(3.5f);
-}
-
-void ResultView::TriggerSE()
-{
-	SoundSource* triggerSE = NewGO<SoundSource>(0);
-	triggerSE->Init(6);
-	triggerSE->Play(false);
-	triggerSE->SetVolume(3.5f);
-}
-

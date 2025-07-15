@@ -35,7 +35,6 @@ public:
 
 private:
 	void InitSky();
-	void InitBGM();
 	void InitLevelObjectDataList();
 	void InitLevelObject(LevelObjectData& objData);
 

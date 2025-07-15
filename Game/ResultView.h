@@ -53,10 +53,6 @@ private:
 	void SetGotStarCountFontRender();
 	void SetScoreOfRankFontRenderList();
 
-	void EndSE();
-	void CallSE();
-	void TriggerSE();
-
 private:
 	BackGround* m_backGround = nullptr;
 	Game* m_game = nullptr;

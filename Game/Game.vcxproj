@@ -262,6 +262,7 @@
     <ClInclude Include="ResultView.h" />
     <ClInclude Include="SaveData.h" />
     <ClInclude Include="Score.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Star.h" />
     <ClInclude Include="StarSpawner.h" />
     <ClInclude Include="stdafx.h" />
