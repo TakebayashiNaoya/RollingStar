@@ -42,8 +42,6 @@ bool ResultView::Start()
 	return true;
 }
 
-//更新処理。
-
 void ResultView::Update()
 {
 	if (m_game->GetGameEndFlag())
@@ -118,7 +116,6 @@ void ResultView::Update()
 	}
 }
 
-//描画処理。
 void ResultView::Render(RenderContext& rc)
 {
 	if (m_game->GetGameEndFlag())
