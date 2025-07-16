@@ -6,7 +6,7 @@
 
 namespace {
 	const float COLOR_CHANGE_TIME = 30.0f;
-	const float MAX_TIMER = 2.0f;
+	const float MAX_TIMER = 60.0f;
 }
 
 bool GameTimer::Start()
