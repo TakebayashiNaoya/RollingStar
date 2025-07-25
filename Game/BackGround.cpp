@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "BackGround.h"
-
 #include"Game.h"
 #include"Transform.h"
 
 namespace
 {
-	const float SPEED_POWER = 0.4f;	//回転スピード
+	const float SPEED_POWER = 0.4f;			// 回転スピードを設定します。
+	const float STICK_INPUT_JUDGE = 0.01f;	// スティックの入力があるかを得る基準数値です。
+	const float FIX_ZERO = 0.0f;			// 0.0fで初期化するための定数です。
 }
 
 BackGround::BackGround()
@@ -43,64 +44,56 @@ void BackGround::Render(RenderContext& rc)
 	m_modelRender.Draw(rc);
 }
 
-///////////////////////////////////////////////////////////////////
-// ここからメソッドまとめ。
-///////////////////////////////////////////////////////////////////
-
 void BackGround::Rotation()
 {
-	if (m_game->GetGameStartFlag() == false) {
+	if (m_game->GetGameStartFlag() == false)
+	{
 		return;
 	}
 
-	//左スティックの入力量を取得。
 	Vector3 stickL;
-	stickL.x = g_pad[0]->GetLStickXF(); //左右方向
-	stickL.y = g_pad[0]->GetLStickYF(); //前後方向
+	stickL.x = g_pad[0]->GetLStickXF();
+	stickL.y = g_pad[0]->GetLStickYF();
 
-	//カメラの前方向と右方向のベクトルを取得。
 	Vector3 forward = g_camera3D->GetForward();
 	Vector3 right = g_camera3D->GetRight();
 
-	//移動方向のY成分をゼロにして地面平面上に制限。
-	forward.y = 0.0f;
-	right.y = 0.0f;
+	//移動方向のY成分をゼロにして地面平面上に制限します。
+	forward.y = FIX_ZERO;
+	right.y = FIX_ZERO;
 
-	//正規化して方向ベクトルに変換
 	forward.Normalize();
 	right.Normalize();
 
-	//移動速度にスティックの入力量を加算する。
-	m_moveSpeed = right * stickL.x + forward * stickL.y;
+	//移動速度にスティックの入力量を加算します。
+	m_rotationVector = right * stickL.x + forward * stickL.y;
 
-	if (m_moveSpeed.Length() > 0.01f)
+	if (m_rotationVector.Length() > STICK_INPUT_JUDGE)
 	{
-		//パッド入力があれば正規化して方向のみを取得。
-		//理由：長さの情報は回転量には使わないから。
-		m_moveSpeed.Normalize();
+		//パッド入力があれば正規化して方向のみを取得します。
+		//理由：長さの情報は回転量には使わないため。
+		m_rotationVector.Normalize();
 
-		// スティック方向に応じた回転を作成。
-		// X軸（左右方向）にZ方向のスティック入力（前後）
+		// スティック方向に応じた回転を作成します。
+		// X軸（左右方向）にZ方向のスティック入力（前後）。
 		Vector3 axisX = Vector3::AxisX;
-		float angleX = -m_moveSpeed.z * SPEED_POWER;
+		float angleX = -m_rotationVector.z * SPEED_POWER;
 
-		// Z軸（前後方向）にX方向のスティック入力（左右）
+		// Z軸（前後方向）にX方向のスティック入力（左右）。
 		Vector3 axisZ = Vector3::AxisZ;
-		float angleZ = m_moveSpeed.x * SPEED_POWER;
+		float angleZ = m_rotationVector.x * SPEED_POWER;
 
-		// 各軸ごとにQuaternionを作成
 		Quaternion rotX, rotZ;
 		rotX.SetRotationDeg(axisX, angleX);
 		rotZ.SetRotationDeg(axisZ, angleZ);
 
-		// 合成回転（順番：Z → X、必要なら逆も可）
+		// 合成回転（順番：Z → X、必要なら逆も可）。
 		Quaternion deltaRotation = rotZ * rotX;
 
-		// 現在の回転に合成
+		// 現在の回転に合成します。
 		m_rotationQuat = deltaRotation * m_rotationQuat;
 		m_transform->m_localRotation = m_rotationQuat;
 	}
 
-	//絵描きさんに回転を教える。
 	m_modelRender.SetRotation(m_rotationQuat);
 }

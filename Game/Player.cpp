@@ -1,9 +1,17 @@
 #include "stdafx.h"
 #include "Player.h"
-
 #include "SoundManager.h"
-
 #include "Game.h"
+
+namespace
+{
+	const float FIX_ZERO = 0.0f;			// 0.0fで固定するための定数です。
+	const float FIX_ONE = 1.0f;				// プレイヤーは動かさず入力のみ得たいため。
+	const float STICK_INPUT_JUDGE = 0.001f;	// スティックの入力を判定する数値です。
+	const float RESET_ZERO = 0.0f;			// 0.0fで初期化するための定数です。
+	const float GRAVITY = 2.5f;				// 重力の強さを設定します。
+	const float JUMP_SPEED = 240.0f;		// ジャンプの上昇スピードを設定します。
+}
 
 bool Player::Start()
 {
@@ -19,6 +27,7 @@ bool Player::Start()
 	m_characterController.Init(25.0f, 75.0f, m_position);
 
 	m_game = FindGO<Game>("game");
+
 
 	return true;
 }
@@ -37,125 +46,96 @@ void Player::Render(RenderContext& rc)
 	m_modelRender.Draw(rc);
 }
 
-
-///////////////////////////////////////////////////////////////////
-// ここからメソッドまとめ。
-///////////////////////////////////////////////////////////////////
-
-
 void Player::Move()
 {
-	if (m_game->GetGameStartFlag()) {
+	if (m_game->GetGameStartFlag())
+	{
+		// xzの移動速度を0.0fにします。
+		m_moveSpeed.x = RESET_ZERO;
+		m_moveSpeed.z = RESET_ZERO;
 
-		//xzの移動速度を0.0fにする。
-		m_moveSpeed.x = 0.0f;
-		m_moveSpeed.z = 0.0f;
-
-		//左スティックの入力量を取得。
+		// 左スティックの入力量を取得します。
 		Vector3 stickL;
 		stickL.x = g_pad[0]->GetLStickXF();
 		stickL.y = g_pad[0]->GetLStickYF();
 
-		//カメラの前方向と右方向のベクトルを持ってくる。
+		// カメラの前方向と右方向のベクトルを持ってきます。
 		Vector3 forward = g_camera3D->GetForward();
 		Vector3 right = g_camera3D->GetRight();
-		//y方向には移動させない。
-		forward.y = 0.0f;
-		right.y = 0.0f;
 
-		//左スティックの入力量と120.0fを乗算。
-		right *= stickL.x * 1.0f;
-		forward *= stickL.y * 1.0f;
+		forward.y = FIX_ZERO;
+		right.y = FIX_ZERO;
 
-		//移動速度にスティックの入力量を加算する。
+		right *= stickL.x * FIX_ONE;
+		forward *= stickL.y * FIX_ONE;
+
+		// 移動速度にスティックの入力量を加算します。
 		m_moveSpeed += right + forward;
 
 		if (m_characterController.IsOnGround())
 		{
-			//重力を無くす。
-			m_moveSpeed.y = 0.0f;
+			m_moveSpeed.y = RESET_ZERO;
 
 			if (g_pad[0]->IsTrigger(enButtonA))
 			{
-				//ジャンプさせる。
-				m_moveSpeed.y = 240.0f;
+				// ジャンプ。
+				m_moveSpeed.y = JUMP_SPEED;
 
-				//ジャンプの音を鳴らす。
-				SoundNewGO(enSoundList_JumpSE);
+				SoundManager* soundManager = FindGO<SoundManager>("soundmanager");
+				soundManager->SoundNewGO(enSoundList_JumpSE);
 			}
 		}
-		//地面に付いていなかったら。
 		else
 		{
-			//重力を発生させる。
-			m_moveSpeed.y -= 2.5f;
+			// 重力。
+			m_moveSpeed.y -= GRAVITY;
 		}
 
-		//キャラクターコントローラーを使って座標を移動させる。
 		m_position = m_characterController.Execute(m_moveSpeed, 1.0f / 60.0f);
 	}
-	//絵描きさんに座標を教える。
+
 	m_modelRender.SetPosition(m_position);
 }
 
 void Player::Rotation()
 {
-	//xかzの移動速度があったら(スティックの入力があったら)。
-	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
+	if (fabsf(m_moveSpeed.x) >= STICK_INPUT_JUDGE || fabsf(m_moveSpeed.z) >= STICK_INPUT_JUDGE)
 	{
-		//キャラクターの方向を変える。
 		m_rotation.SetRotationYFromDirectionXZ(m_moveSpeed);
-		//絵描きさんに回転を教える。
 		m_modelRender.SetRotation(m_rotation);
 	}
 }
 
-//ステート管理。
 void Player::ManageState()
 {
-	//地面に付いていなかったら。
 	if (m_characterController.IsOnGround() == false)
 	{
-		//ステートを1(ジャンプ中)にする。
-		m_playerState = 1;
-		//ここでManageStateの処理を終わらせる。
+		m_playerState = enAnimationClip_Jump;
 		return;
 	}
 
-	//地面に付いていたら。
-	//xかzの移動速度があったら(スティックの入力があったら)。
-	if (fabsf(m_moveSpeed.x) >= 0.001f || fabsf(m_moveSpeed.z) >= 0.001f)
+	if (fabsf(m_moveSpeed.x) >= STICK_INPUT_JUDGE || fabsf(m_moveSpeed.z) >= STICK_INPUT_JUDGE)
 	{
-		//ステートを2(歩き)にする。
-		m_playerState = 2;
+		m_playerState = enAnimationClip_Walk;
 	}
-	//xとzの移動速度が無かったら(スティックの入力が無かったら)。
 	else
 	{
-		//ステートを0(待機)にする。
-		m_playerState = 0;
+		m_playerState = enAnimationClip_Idle;
 	}
 }
 
-//アニメーションの再生。
 void Player::PlayAnimation()
 {
-	//switch文。
-	switch (m_playerState) {
-		//プレイヤーステートが0(待機)だったら。
-	case 0:
-		//待機アニメーションを再生する。
+	switch (m_playerState)
+	{
+	case enAnimationClip_Idle:
 		m_modelRender.PlayAnimation(enAnimationClip_Idle);
 		break;
-		//プレイヤーステートが1(ジャンプ中)だったら。
-	case 1:
-		//ジャンプアニメーションを再生する。
-		m_modelRender.PlayAnimation(enAnimationClip_Jump);
-		break;
-		//プレイヤーステートが2(歩き)だったら。
-	case 2:
-		//歩きアニメーションを再生する。
+	case enAnimationClip_Walk:
 		m_modelRender.PlayAnimation(enAnimationClip_Walk);
+		break;
+	case enAnimationClip_Jump:
+		m_modelRender.PlayAnimation(enAnimationClip_Jump);
 		break;
 	}
 }

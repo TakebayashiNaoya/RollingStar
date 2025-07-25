@@ -17,7 +17,8 @@ Transform::Transform()
 
 Transform::~Transform()
 {
-	if (m_parent) {
+	if (m_parent)
+	{
 		m_parent->RemoveChild(this);
 	}
 	Release();
@@ -26,7 +27,8 @@ Transform::~Transform()
 void Transform::UpdateTransform()
 {
 
-	if (m_parent) {
+	if (m_parent)
+	{
 		//À•WŒvŽZ
 		Matrix localPos;
 		localPos.MakeTranslation(m_localPosition);
@@ -46,7 +48,6 @@ void Transform::UpdateTransform()
 
 		//‰ñ“]
 		m_rotation = m_parent->m_rotation * m_localRotation;
-
 	}
 	else
 	{

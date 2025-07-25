@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "StarSpawner.h"
-
 #include "BackGround.h"
 #include "Star.h"
 #include "Transform.h"
 
-namespace {
+namespace
+{
 	const float RESPAWN_TIME = 3.0f;
 }
 
@@ -33,20 +33,21 @@ bool StarSpawner::Start()
 
 void StarSpawner::Update()
 {
-	if (m_star == nullptr) {
+	if (m_star == nullptr)
+	{
 		m_respawnTimer += g_gameTime->GetFrameDeltaTime();
-		if (m_respawnTimer >= RESPAWN_TIME) {
+		if (m_respawnTimer >= RESPAWN_TIME)
+		{
 			m_star = NewGO<Star>(0, "star");
 			m_star->SetTransform(m_transform);
-			m_respawnTimer = 0.0f;//リセット
+			m_respawnTimer = 0.0f;	//リセット
 		}
 	}
-	else if (m_star->isDead) {
+	else if (m_star->GetIsDead())
+	{
 		DeleteGO(m_star);
 		m_star = nullptr;
 	}
 
 	m_transform->UpdateTransform();
-	m_modelRender.SetTRS(m_transform->m_position, m_transform->m_rotation, m_transform->m_scale);
-	m_modelRender.Update();
 }

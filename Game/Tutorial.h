@@ -1,6 +1,6 @@
-///
+/// <summary>
 /// チュートリアルを管理するクラス
-///
+/// </summary>
 #pragma once
 
 class CountDown;
@@ -11,19 +11,13 @@ class Tutorial :public IGameObject
 {
 public:
 	~Tutorial();
-	bool Start()override;
-	void Update()override;
-	void Render(RenderContext& rc)override;
 
 private:
-	Game* m_game = nullptr;
-	GameTimer* m_gameTimer = nullptr;
-	CountDown* m_countDown = nullptr;
+	bool Start()override final;
+	void Update()override final;
+	void Render(RenderContext& rc)override final;
 
-private:
-	SpriteRender m_spriteRender;
-	FontRender m_fontRender;
-	bool m_startFlag = false;
-	bool m_countDownFlag = false;
+	SpriteRender m_spriteRender;	// チュートリアル画面を表示する。
+	bool m_countDownFlag = false;	// カウントダウンを開始するフラグ。
 };
 

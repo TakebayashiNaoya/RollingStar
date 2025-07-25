@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "ResultView.h"
-
 #include "SoundManager.h"
-
 #include "BackGround.h"
 #include "Game.h"
 #include "GameCamera.h"
@@ -12,11 +10,12 @@
 #include "Score.h"
 #include "Star.h"
 #include "Title.h"
-
 #include <algorithm>
 
-namespace {
+namespace
+{
 	const float FONT_SPACE = -200.0f;
+	const float DRAW_SWITCH_DELAY = 3.0f;
 }
 
 ResultView::~ResultView()
@@ -26,7 +25,6 @@ ResultView::~ResultView()
 
 bool ResultView::Start()
 {
-	//spriteRenderに入れて切り替え
 	m_endSpriteRender.Init("Assets/sprite/end.dds", 1920.0f, 1080.0f);
 	m_resultSpriteRender.Init("Assets/sprite/result.dds", 1280.0f, 900.0f);
 	m_backScreenSpriteRender.Init("Assets/sprite/backBlack.dds", 1280.0f, 900.0f);
@@ -38,6 +36,7 @@ bool ResultView::Start()
 	m_gameTimer = FindGO<GameTimer>("gametimer");
 	m_score = FindGO<Score>("score");
 	m_saveData = FindGO<SaveData>("savedata");
+
 
 	return true;
 }
@@ -52,16 +51,18 @@ void ResultView::Update()
 
 			m_spriteRender = &m_endSpriteRender;
 
-			//1回だけ終了サウンドを鳴らす
+			// 一度だけ終了サウンドを鳴らします。
 			if (onceEndSE)
 			{
-				SoundNewGO(enSoundList_EndSE);
+				SoundManager* soundManager = FindGO<SoundManager>("soundmanager");
+				soundManager->SoundNewGO(enSoundList_EndSE);
 				onceEndSE = false;
 			}
 
-			//タイムアップから3秒後にリザルト表示
+			// タイムアップから3秒後にリザルト表示します。
 			m_timerToResult += g_gameTime->GetFrameDeltaTime();
-			if (m_timerToResult >= 3.0f) {
+			if (m_timerToResult >= DRAW_SWITCH_DELAY)
+			{
 				m_viewState = enViewStates_Result;
 			}
 
@@ -74,15 +75,18 @@ void ResultView::Update()
 			SetTotalScoreFontRender();
 			SetGotStarCountFontRender();
 
-			//1回だけ歓声SEを鳴らす
-			if (onceCallSE) {
-				SoundNewGO(enSoundList_CallSE);
+			// 一度だけ歓声SEを鳴らします。
+			if (onceCallSE)
+			{
+				SoundManager* soundManager = FindGO<SoundManager>("soundmanager");
+				soundManager->SoundNewGO(enSoundList_CallSE);
 				onceCallSE = false;
 			}
 
 			if (g_pad[0]->IsTrigger(enButtonA))
 			{
-				SoundNewGO(enSoundList_SelectSE);
+				SoundManager* soundManager = FindGO<SoundManager>("soundmanager");
+				soundManager->SoundNewGO(enSoundList_SelectSE);
 
 				m_viewState = enViewStates_Rankings;
 			}
@@ -93,8 +97,9 @@ void ResultView::Update()
 
 			m_spriteRender = &m_backScreenSpriteRender;
 
-			//一度だけセーブする
-			if (onceSaveScore) {
+			// 一度だけセーブします。
+			if (onceSaveScore)
+			{
 				m_saveData->m_scoreRankList.push_back(m_score->GetTotalScore());
 				onceSaveScore = false;
 			}
@@ -105,7 +110,8 @@ void ResultView::Update()
 
 			if (g_pad[0]->IsTrigger(enButtonA))
 			{
-				SoundNewGO(enSoundList_SelectSE);
+				SoundManager* soundManager = FindGO<SoundManager>("soundmanager");
+				soundManager->SoundNewGO(enSoundList_SelectSE);
 
 				m_title = NewGO<Title>(0, "title");
 
@@ -128,18 +134,21 @@ void ResultView::Render(RenderContext& rc)
 
 			m_totalScoreFontRender.Draw(rc);
 
-			for (int i = 0; i < StarKinds_Num; i++) {
+			for (int i = 0; i < StarKinds_Num; i++)
+			{
 				m_gotStarCountFontRenderList[i].Draw(rc);
 			}
 			break;
 
 		case enViewStates_Rankings:
 
-			for (int i = 0; i < SpritesForRankingView_Num; i++) {
+			for (int i = 0; i < SpritesForRankingView_Num; i++)
+			{
 				m_spritesForRankingView[i].Draw(rc);
 			}
 
-			for (int i = 0; i < Ranking_Num; i++) {
+			for (int i = 0; i < Ranking_Num; i++)
+			{
 				m_scoreOfRankFontRenderList[i].Draw(rc);
 			}
 		}
@@ -164,7 +173,8 @@ void ResultView::RankingUI_InitSetList()
 	m_spritesForRankingView[enSpritesForRankingView_PushA].Init("Assets/sprite/pushAtoTitle.dds", 600.0f, 100.0f);
 	m_spritesForRankingView[enSpritesForRankingView_PushA].SetPosition({ 300.0f,-400.0f,0.0f });
 
-	for (int i = 0; i < SpritesForRankingView_Num; i++) {
+	for (int i = 0; i < SpritesForRankingView_Num; i++)
+	{
 		m_spritesForRankingView[i].Update();
 	}
 }
@@ -193,7 +203,8 @@ void ResultView::SetGotStarCountFontRender()
 
 void ResultView::SetScoreOfRankFontRenderList()
 {
-	for (int i = 0; i < Ranking_Num; i++) {
+	for (int i = 0; i < Ranking_Num; i++)
+	{
 		SetTextOption(-120.0f, 220.0f + FONT_SPACE * i, 2.0f, g_vec4White, &m_scoreOfRankFontRenderList[i], L"%d", m_saveData->m_scoreRankList[i]);
 	}
 

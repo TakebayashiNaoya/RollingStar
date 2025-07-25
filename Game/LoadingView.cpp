@@ -1,10 +1,15 @@
 #include "stdafx.h"
 #include "LoadingView.h"
-
 #include "SoundManager.h"
-
 #include "Tutorial.h"
 #include "Type.h"
+
+namespace
+{
+	const Vector4 FONT_COLOR = { 0.9f, 0.9f, 1.0f, 1.0f };	// 青みがかった白。
+	const Vector2 FONT_POSITION = { 450.0f, -350.0f };		// PUSH(A)の位置。
+	const float FONT_SIZE = 2.0f;							// PUSH(A)のサイズ。
+}
 
 LoadingView::~LoadingView()
 {
@@ -15,26 +20,27 @@ bool LoadingView::Start()
 {
 	m_LoadingSceneSpriteRender.Init("Assets/sprite/LoadingView.dds", 1920.0f, 1080.0f);
 
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_1].Init("Assets/sprite/neonNormalStar.dds", 120.0f, 120.0f);
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_1].SetPosition({ -319.0f, -393.5f, 0.0f });
+	m_LoadingPhaseSpriteRenders[enLoadingPhase_First].Init("Assets/sprite/neonNormalStar.dds", 120.0f, 120.0f);
+	m_LoadingPhaseSpriteRenders[enLoadingPhase_First].SetPosition({ -319.0f, -393.5f, 0.0f });
 
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_2].Init("Assets/sprite/neonGreenStar.dds", 120.0f, 120.0f);
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_2].SetPosition({ -193.0f, -393.5f, 0.0f });
+	m_LoadingPhaseSpriteRenders[enLoadingPhase_Second].Init("Assets/sprite/neonGreenStar.dds", 120.0f, 120.0f);
+	m_LoadingPhaseSpriteRenders[enLoadingPhase_Second].SetPosition({ -193.0f, -393.5f, 0.0f });
 
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_3].Init("Assets/sprite/neonBlueStar.dds", 120.0f, 120.0f);
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_3].SetPosition({ -65.0f, -393.5f, 0.0f });
+	m_LoadingPhaseSpriteRenders[enLoadingPhase_Third].Init("Assets/sprite/neonBlueStar.dds", 120.0f, 120.0f);
+	m_LoadingPhaseSpriteRenders[enLoadingPhase_Third].SetPosition({ -65.0f, -393.5f, 0.0f });
 
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_4].Init("Assets/sprite/neonPurpleStar.dds", 120.0f, 120.0f);
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_4].SetPosition({ 64.0f, -393.5f, 0.0f });
+	m_LoadingPhaseSpriteRenders[enLoadingPhase_Fourth].Init("Assets/sprite/neonPurpleStar.dds", 120.0f, 120.0f);
+	m_LoadingPhaseSpriteRenders[enLoadingPhase_Fourth].SetPosition({ 64.0f, -393.5f, 0.0f });
 
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_5].Init("Assets/sprite/neonOrangeStar.dds", 120.0f, 120.0f);
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_5].SetPosition({ 190.0f, -393.5f, 0.0f });
+	m_LoadingPhaseSpriteRenders[enLoadingPhase_Fifth].Init("Assets/sprite/neonOrangeStar.dds", 120.0f, 120.0f);
+	m_LoadingPhaseSpriteRenders[enLoadingPhase_Fifth].SetPosition({ 190.0f, -393.5f, 0.0f });
 
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_6].Init("Assets/sprite/neonRedStar.dds", 120.0f, 120.0f);
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_6].SetPosition({ 317.0f, -393.5f, 0.0f });
+	m_LoadingPhaseSpriteRenders[enLoadingPhase_Sixth].Init("Assets/sprite/neonRedStar.dds", 120.0f, 120.0f);
+	m_LoadingPhaseSpriteRenders[enLoadingPhase_Sixth].SetPosition({ 317.0f, -393.5f, 0.0f });
 
-	for (int i = 0; i < Phase_Num; i++) {
-		m_LoadingPhaseSpriteRenders[i].Update();
+	for (auto& sprite : m_LoadingPhaseSpriteRenders)
+	{
+		sprite.Update();
 	}
 
 	return true;
@@ -42,13 +48,14 @@ bool LoadingView::Start()
 
 void LoadingView::Update()
 {
-	if (showLoadingPhases[enLoadingPhase_6])
+	if (showLoadingPhases[enLoadingPhase_Sixth])
 	{
-		SetTextOption(450.0f, -350.0f, 2.0f, { 0.9f, 0.9f, 1.0f, 1.0f }, &m_pushA_FontRender, L"PUSH (A) ");
+		SetTextOption(FONT_POSITION.x, -FONT_POSITION.y, FONT_SIZE, FONT_COLOR, &m_pushA_FontRender, L"PUSH (A) ");
 
 		if (g_pad[0]->IsTrigger(enButtonA))
 		{
-			SoundNewGO(enSoundList_SelectSE);
+			SoundManager* soundManager = FindGO<SoundManager>("soundmanager");
+			soundManager->SoundNewGO(enSoundList_SelectSE);
 
 			DeleteGO(this);
 		}
@@ -60,8 +67,10 @@ void LoadingView::Render(RenderContext& rc)
 {
 	m_LoadingSceneSpriteRender.Draw(rc);
 
-	for (int i = 0; i < Phase_Num; i++) {
-		if (showLoadingPhases[i]) {
+	for (int i = 0; i < Phase_Num; i++)
+	{
+		if (showLoadingPhases[i])
+		{
 			m_LoadingPhaseSpriteRenders[i].Draw(rc);
 		}
 	}

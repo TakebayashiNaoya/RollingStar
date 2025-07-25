@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Score.h"
-
 #include"Game.h"
 #include"Star.h"
 
@@ -36,24 +35,29 @@ void Score::Update()
 	text[enStarKinds_Green] = { m_starCount[enStarKinds_Green],-850.0f,220.0f,1.3f,g_vec4White };
 	text[enStarKinds_Normal] = { m_starCount[enStarKinds_Normal],-850.0f,170.0f,1.3f,g_vec4White };
 
-	for (int i = 0; i < StarKinds_Num; i++) {
+	for (int i = 0; i < StarKinds_Num; i++)
+	{
 		SetTextOption(text[i].pos_x, text[i].pos_y, text[i].scale, text[i].textColor, &m_getStarCountFontRender[i], L"%d", text[i].data);
 	}
+
 }
 
 void Score::Render(RenderContext& rc)
 {
-	if (m_game->GetGameEndFlag() == false) {
-		if (m_game->GetGameStartFlag()) {
-
+	if (m_game->GetGameEndFlag() == false)
+	{
+		if (m_game->GetGameStartFlag())
+		{
 			m_scoreFontRender.Draw(rc);
 			m_totalScoreFontRender.Draw(rc);
 
-			for (int i = 0; i < StarKinds_Num; i++) {
+			for (int i = 0; i < StarKinds_Num; i++)
+			{
 				m_getStarCountFontRender[i].Draw(rc);
 			}
 
-			for (int j = 0; j < StarKinds_Num; j++) {
+			for (int j = 0; j < StarKinds_Num; j++)
+			{
 				m_starSpriteRender[j].Draw(rc);
 			}
 		}
@@ -87,7 +91,8 @@ void Score::SpriteRenderList()
 	m_starSpriteRender[enStarKinds_Normal].Init("Assets/sprite/normalStar.dds", 50.0f, 50.0f);
 	m_starSpriteRender[enStarKinds_Normal].SetPosition({ -900,150,0 });
 
-	for (int i = 0; i < StarKinds_Num; i++) {
+	for (int i = 0; i < StarKinds_Num; i++)
+	{
 		m_starSpriteRender[i].Update();
 	}
 }

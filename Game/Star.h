@@ -1,6 +1,6 @@
-///
+/// <summary>
 /// スターを管理するクラス
-///
+/// </summary>
 #pragma once
 
 class Game;
@@ -12,37 +12,57 @@ class Transform;
 class Star :public IGameObject
 {
 public:
-	~Star();
-	bool Start() override;
-	void Update()override;
-	void Render(RenderContext& rc)override;
+	/// <summary>
+	/// オブジェクトが消滅しているかを判定します。
+	/// </summary>
+	/// <returns>消滅している場合は true、そうでない場合は false を返します。</returns>
+	bool GetIsDead()
+	{
+		return m_isDead;
+	}
 
-
-	bool isDead = false;
-	int starColor;
-
-public:
+	/// <summary>
+	/// Transform オブジェクトを設定します。
+	/// </summary>
+	/// <param name="p">設定する Transform オブジェクトへのポインタ。</param>
 	void SetTransform(Transform* p)
 	{
 		m_transform = p;
 	}
 
 private:
+	bool Start() override final;
+	void Update()override final;
+	void Render(RenderContext& rc)override final;
+
+	/// <summary>
+	/// スターの色を設定します。
+	/// </summary>
 	void SetStarColor();
-	void SetInit();
+
+	/// <summary>
+	/// スターの色に合わせてモデルレンダーを初期化。
+	/// </summary>
+	void StarModelInit();
+
+	/// <summary>
+	/// スターを取得する処理。
+	/// </summary>
 	void GetStar();
+
+	/// <summary>
+	/// スターの自転処理。
+	/// </summary>
 	void Rotation();
 
-private:
 	Game* m_game = nullptr;
 	Player* m_player = nullptr;
 	PopScoreManager* m_popScoreManager = nullptr;
 	Score* m_score = nullptr;
 	Transform* m_transform = nullptr;
 
-private:
-	ModelRender	m_modelRender;
-	Vector3		m_moveSpeed = Vector3::Zero;
-	Vector3		m_position = Vector3::Zero;
-	Quaternion	m_rotation;
+	ModelRender m_modelRender;				// スターを描画。
+	Quaternion m_rotation;					// スターの自転角度を格納。
+	int m_starColor;						// スターの色を格納する。
+	bool m_isDead = false;					// スターがDeleteされたとき、trueにしてStarSpawnerクラスに伝える。
 };

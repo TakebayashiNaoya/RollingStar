@@ -1,8 +1,7 @@
-///
+/// <summary>
 /// ゲームスタート時のカウントダウンクラス
-///
+/// </summary>
 #pragma once
-
 class Game;
 
 class CountDown :public IGameObject
@@ -10,24 +9,26 @@ class CountDown :public IGameObject
 public:
 	CountDown();
 	~CountDown();
-	bool Start()override;
-	void Update()override;
-	void Render(RenderContext& rc)override;
 
 private:
+	bool Start()override final;
+	void Update()override final;
+	void Render(RenderContext& rc)override final;
+
+	/// <summary>
+	/// スプライトレンダーを計算して返します。
+	/// </summary>
+	/// <returns>計算された SpriteRender オブジェクトへのポインタ。</returns>
 	SpriteRender* ComputeSpriteRender();
 
-private:
-	Game* m_game = nullptr;
+	Game* m_game = nullptr;					// Game型のポインタ。
+	SpriteRender* m_spriteRender = nullptr;	// SpriteRender型のポインタ。
 
-private:
-	SpriteRender m_count3SpriteRender;
-	SpriteRender m_count2SpriteRender;
-	SpriteRender m_count1SpriteRender;
-	SpriteRender m_countStartSpriteRender;
-	SpriteRender* m_spriteRender = nullptr;
+	SpriteRender m_countThreeSpriteRender;		//「3」と表示するためのSpriteRenderインスタンス。
+	SpriteRender m_countTwoSpriteRender;		//「2」と表示するためのSpriteRenderインスタンス。
+	SpriteRender m_countOneSpriteRender;		//「1」と表示するためのSpriteRenderインスタンス。
+	SpriteRender m_countStartSpriteRender;	//「START」と表示するためのSpriteRenderインスタンス。
 
-	float countDown = 0.0f;
-	int spriteState = 0;
+	float countDown = 0.0f;					// SpriteRenderを切り替える時間を計測するための変数。
 };
 
