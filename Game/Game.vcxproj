@@ -236,6 +236,7 @@
     <ClCompile Include="ResultView.cpp" />
     <ClCompile Include="SaveData.cpp" />
     <ClCompile Include="Score.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Star.cpp" />
     <ClCompile Include="StarSpawner.cpp" />
     <ClCompile Include="stdafx.cpp">

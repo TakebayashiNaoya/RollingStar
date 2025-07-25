@@ -28,6 +28,7 @@
     <ClCompile Include="PopScoreManager.cpp" />
     <ClCompile Include="LoadingView.cpp" />
     <ClCompile Include="SaveData.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />

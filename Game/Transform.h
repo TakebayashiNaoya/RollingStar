@@ -1,6 +1,6 @@
-///
+/// <summary>
 /// トランスフォームを管理するクラス
-///
+/// </summary>
 #pragma once
 
 class Transform : public Noncopyable

@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "Star.h"
-
 #include "SoundManager.h"
-
 #include "Game.h"
 #include "Player.h"
 #include "PopScoreManager.h"
@@ -10,7 +8,8 @@
 #include "Transform.h"
 #include "Type.h"
 
-namespace {
+namespace
+{
 	const float GET_STAR_LENGTH = 200.0f;
 
 	const int PERCENT_SCALE = 100;
@@ -21,10 +20,6 @@ namespace {
 	const int COLOR_PROBABILITY_GREEN = 30;
 };
 
-Star::~Star()
-{
-}
-
 bool Star::Start()
 {
 	m_popScoreManager = FindGO<PopScoreManager>("popscoremanager");
@@ -33,7 +28,7 @@ bool Star::Start()
 	m_game = FindGO<Game>("game");
 
 	SetStarColor();
-	SetInit();
+	StarModelInit();
 
 	return true;
 }
@@ -59,17 +54,17 @@ void Star::Render(RenderContext& rc)
 
 void Star::SetStarColor()
 {
-	if (rand() % PERCENT_SCALE < COLOR_PROBABILITY_RED) { starColor = enStarKinds_Red; }
-	else if (rand() % PERCENT_SCALE < COLOR_PROBABILITY_ORANGE) { starColor = enStarKinds_Orange; }
-	else if (rand() % PERCENT_SCALE < COLOR_PROBABILITY_PURPLE) { starColor = enStarKinds_Purple; }
-	else if (rand() % PERCENT_SCALE < COLOR_PROBABILITY_BLUE) { starColor = enStarKinds_Blue; }
-	else if (rand() % PERCENT_SCALE < COLOR_PROBABILITY_GREEN) { starColor = enStarKinds_Green; }
-	else { starColor = enStarKinds_Normal; }
+	if (rand() % PERCENT_SCALE < COLOR_PROBABILITY_RED) { m_starColor = enStarKinds_Red; }
+	else if (rand() % PERCENT_SCALE < COLOR_PROBABILITY_ORANGE) { m_starColor = enStarKinds_Orange; }
+	else if (rand() % PERCENT_SCALE < COLOR_PROBABILITY_PURPLE) { m_starColor = enStarKinds_Purple; }
+	else if (rand() % PERCENT_SCALE < COLOR_PROBABILITY_BLUE) { m_starColor = enStarKinds_Blue; }
+	else if (rand() % PERCENT_SCALE < COLOR_PROBABILITY_GREEN) { m_starColor = enStarKinds_Green; }
+	else { m_starColor = enStarKinds_Normal; }
 }
 
-void Star::SetInit()
+void Star::StarModelInit()
 {
-	switch (starColor)
+	switch (m_starColor)
 	{
 	case enStarKinds_Red:
 		m_modelRender.Init("Assets/modelData/redStar.tkm");
@@ -96,19 +91,19 @@ void Star::GetStar()
 {
 	Vector3 diff = m_transform->m_position - m_player->GetPosition();
 
-	if (m_game->GetGameStartFlag()) {
-		//プレイヤーと☆の距離が150.0fより小さかったら。
+	if (m_game->GetGameStartFlag())
+	{
 		const float distnce = diff.Length();
 		if (distnce <= GET_STAR_LENGTH)
 		{
-			SoundNewGO(enSoundList_StarGetSE);
+			SoundManager* soundManager = FindGO<SoundManager>("soundmanager");
+			soundManager->SoundNewGO(enSoundList_StarGetSE);
 
-			m_score->StarCountIncrease(starColor);
+			m_score->StarCountIncrease(m_starColor);
 
-			isDead = true;		//スポナーにスターが消えたことを伝える
-
-			m_popScoreManager->SetPopFlag(true);//スコアをポップさせる
-			m_popScoreManager->SetColorChecker(starColor);
+			m_isDead = true;
+			m_popScoreManager->SetPopFlag(true);
+			m_popScoreManager->SetColorChecker(m_starColor);
 		}
 	}
 }

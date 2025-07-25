@@ -1,3 +1,6 @@
+/// <summary>
+/// スタースポナーを管理するクラス
+/// </summary>
 #pragma once
 
 class BackGround;
@@ -9,23 +12,23 @@ class StarSpawner :public IGameObject
 public:
 	StarSpawner();
 	~StarSpawner();
-	bool Start();
-	void Update();
 
+	/// <summary>
+	/// m_transform メンバーへのポインタを取得します。
+	/// </summary>
+	/// <returns>Transform 型のポインタ。m_transform メンバーへのポインタを返します。</returns>
 	Transform* GetTransform()
 	{
 		return m_transform;
 	}
 
 private:
+	bool Start()override final;
+	void Update()override final;
+
 	BackGround* m_backGround = nullptr;
 	Star* m_star = nullptr;
 	Transform* m_transform = nullptr;
 
-private:
-	Vector3 m_position = Vector3::Zero;
-	Vector3 m_scale = Vector3::Zero;
-	Quaternion m_rotation;
-	ModelRender m_modelRender;
-	float m_respawnTimer = 0.0f;
+	float m_respawnTimer = 0.0f;	// スターのリスポーン時間を格納する。
 };

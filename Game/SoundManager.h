@@ -1,46 +1,39 @@
+/// <summary>
+/// サウンドを管理するクラス。
+/// </summary>
 #pragma once
 #include "sound/SoundEngine.h"
 #include "sound/SoundSource.h"
 
-enum EnSoundList {
-	enSoundList_TitleBGM,
-	enSoundList_InGameBGM,
-	enSoundList_SelectSE,
-	enSoundList_CountDownSE,
-	enSoundList_JumpSE,
-	enSoundList_StarGetSE,
-	enSoundList_EndSE,
-	enSoundList_CallSE,
+enum EnSoundList
+{
+	enSoundList_TitleBGM,		// タイトルで再生するBGM。
+	enSoundList_InGameBGM,		// インゲームで再生するBGM。
+	enSoundList_SelectSE,		// PUSH(A)でAを押したときに再生するSE。
+	enSoundList_CountDownSE,	// ゲーム開始時に再生するカウントダウンのSE。
+	enSoundList_JumpSE,			// プレイヤーがジャンプしたときに再生するSE。
+	enSoundList_StarGetSE,		// スターを取得したときに再生するSE。
+	enSoundList_EndSE,			// タイムアップで終了するときに再生するSE。
+	enSoundList_CallSE,			// リザルト表示時に再生する歓声SE。
 	enSoundList_Num
 };
 
-struct SoundOption {
-	const char* filePath;
-	bool repeat = false;
-	float volume = 0.0f;
+class SoundManager :public IGameObject
+{
+public:
+	/// <summary>
+	/// 新しいゲームオブジェクトのサウンドを開始します。
+	/// </summary>
+	/// <param name="a">サウンドを開始するゲームオブジェクトの識別子。</param>
+	void SoundNewGO(int a);
+
+	/// <summary>
+	/// 指定されたIDのサウンドオブジェクトを削除します。
+	/// </summary>
+	/// <param name="a">削除するサウンドオブジェクトのID。</param>
+	void SoundDeleteGO(int a);
+
+private:
+	SoundSource* sound[enSoundList_Num];
 };
 
-static SoundSource* sound[enSoundList_Num];
-
-static void SoundNewGO(int a)
-{
-	SoundOption soundOpt[enSoundList_Num];
-	soundOpt[enSoundList_TitleBGM] = { "Assets/sound/title.wav", true, 1.0f };
-	soundOpt[enSoundList_InGameBGM] = { "Assets/sound/inGame.wav", true, 1.0f };
-	soundOpt[enSoundList_SelectSE] = { "Assets/sound/push.wav", false, 3.5f };
-	soundOpt[enSoundList_CountDownSE] = { "Assets/sound/countDownStart.wav", false, 3.5f };
-	soundOpt[enSoundList_JumpSE] = { "Assets/sound/jump.wav", false, 3.5f };
-	soundOpt[enSoundList_StarGetSE] = { "Assets/sound/star.wav", false, 3.5f };
-	soundOpt[enSoundList_EndSE] = { "Assets/sound/end.wav", false, 3.5f };
-	soundOpt[enSoundList_CallSE] = { "Assets/sound/call.wav", false, 3.5f };
-
-	sound[a] = NewGO<SoundSource>(0);
-	g_soundEngine->ResistWaveFileBank(a, soundOpt[a].filePath);
-	sound[a]->Init(a);
-	sound[a]->Play(soundOpt[a].repeat);
-	sound[a]->SetVolume(soundOpt[a].volume);
-}
-
-static void SoundDeleteGO(int a) {
-	DeleteGO(sound[a]);
-}

@@ -39,7 +39,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	//ワイヤーフレーム描画
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
-	//NewGO<SoundManager>(0, "soundmanager");
+	NewGO<SoundManager>(0, "soundmanager");
 
 	//セーブデータクラスのオブジェクトを作成
 	NewGO<SaveData>(0, "savedata");
