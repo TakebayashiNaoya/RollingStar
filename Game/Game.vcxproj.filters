@@ -4,15 +4,6 @@
     <Filter Include="system">
       <UniqueIdentifier>{22dd8095-74f9-46df-81a1-36675a040b1f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scene">
-      <UniqueIdentifier>{aa31a207-fc6e-4fad-b43b-74be29df6e50}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Model">
-      <UniqueIdentifier>{e19e12cd-b5c4-42b2-b29c-7a8a4408e217}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Manager">
-      <UniqueIdentifier>{68ff64d1-9363-4d78-b781-240a1762ec2b}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -20,99 +11,51 @@
     <ClCompile Include="system\system.cpp">
       <Filter>system</Filter>
     </ClCompile>
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="BackGround.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="GameTimer.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Score.cpp" />
+    <ClCompile Include="Star.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="ResultView.cpp" />
+    <ClCompile Include="Title.cpp" />
+    <ClCompile Include="Tutorial.cpp" />
+    <ClCompile Include="CountDown.cpp" />
     <ClCompile Include="StarSpawner.cpp" />
     <ClCompile Include="PopScore.cpp" />
+    <ClCompile Include="PopScoreManager.cpp" />
+    <ClCompile Include="LoadingView.cpp" />
     <ClCompile Include="SaveData.cpp" />
-    <ClCompile Include="Tutorial.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Title.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="ResultView.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="LoadingView.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="CountDown.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="BackGround.cpp">
-      <Filter>Model</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Model</Filter>
-    </ClCompile>
-    <ClCompile Include="Star.cpp">
-      <Filter>Model</Filter>
-    </ClCompile>
-    <ClCompile Include="PopScoreManager.cpp">
-      <Filter>Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="SoundManager.cpp">
-      <Filter>Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="SpriteManager.cpp">
-      <Filter>Manager</Filter>
-    </ClCompile>
+    <ClCompile Include="SoundManager.cpp" />
+    <ClCompile Include="SpriteManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system\system.h">
       <Filter>system</Filter>
     </ClInclude>
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="BackGround.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="GameTimer.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Score.h" />
+    <ClInclude Include="Star.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="ResultView.h" />
+    <ClInclude Include="Title.h" />
+    <ClInclude Include="Tutorial.h" />
+    <ClInclude Include="CountDown.h" />
     <ClInclude Include="StarSpawner.h" />
     <ClInclude Include="PopScore.h" />
     <ClInclude Include="Type.h" />
+    <ClInclude Include="PopScoreManager.h" />
+    <ClInclude Include="LoadingView.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="SaveData.h" />
-    <ClInclude Include="Tutorial.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Title.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="ResultView.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="LoadingView.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="CountDown.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="BackGround.h">
-      <Filter>Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Star.h">
-      <Filter>Model</Filter>
-    </ClInclude>
-    <ClInclude Include="PopScoreManager.h">
-      <Filter>Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="SoundManager.h">
-      <Filter>Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="SpriteManager.h">
-      <Filter>Manager</Filter>
-    </ClInclude>
+    <ClInclude Include="SoundManager.h" />
+    <ClInclude Include="SpriteManager.h" />
   </ItemGroup>
 </Project>
