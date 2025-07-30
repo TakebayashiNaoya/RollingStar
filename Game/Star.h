@@ -16,7 +16,7 @@ public:
 	/// オブジェクトが消滅しているかを判定します。
 	/// </summary>
 	/// <returns>消滅している場合は true、そうでない場合は false を返します。</returns>
-	bool GetIsDead()
+	bool GetIsDead()const
 	{
 		return m_isDead;
 	}
@@ -38,17 +38,12 @@ private:
 	/// <summary>
 	/// スターの色を設定します。
 	/// </summary>
-	void SetStarColor();
-
-	/// <summary>
-	/// スターの色に合わせてモデルレンダーを初期化。
-	/// </summary>
-	void StarModelInit();
+	void SetupStarColor();
 
 	/// <summary>
 	/// スターを取得する処理。
 	/// </summary>
-	void GetStar();
+	void StarGet();
 
 	/// <summary>
 	/// スターの自転処理。

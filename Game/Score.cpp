@@ -1,7 +1,38 @@
 #include "stdafx.h"
 #include "Score.h"
-#include"Game.h"
-#include"Star.h"
+#include "Game.h"
+#include "Star.h"
+#include "SpriteManager.h"
+
+namespace
+{
+	const Vector2 SCORE_TEXT_VIEW_POSITION = { 400.0f, 500.0f };
+	const float SCORE_TEXT_VIEW_SCALE = 1.5f;
+
+	const Vector2 STAR_COUNT_VIEW_POSITION[enStarKinds_Num] =
+	{
+		{-850.0f,420.0f},
+		{-850.0f,370.0f},
+		{-850.0f,320.0f},
+		{-850.0f,270.0f},
+		{-850.0f,220.0f},
+		{-850.0f,170.0f}
+	};
+	const float STAR_COUNT_VIEW_SCALE = 1.3f;
+
+	const Vector2 TOTAL_SCORE_FONT_POSITION = { 410.0f, 430.0f };
+	const float TOTAL_SCORE_FONT_SCALE = 1.5f;
+
+	const Vector3 STAR_SPRITE_SCALE[enStarKinds_Num] =
+	{
+		{ -900.0f,400.0f,0.0f },
+		{ -900.0f,350.0f,0.0f },
+		{ -900.0f,300.0f,0.0f },
+		{ -900.0f,250.0f,0.0f },
+		{ -900.0f,200.0f,0.0f },
+		{ -900.0f,150.0f,0.0f },
+	};
+}
 
 bool Score::Start()
 {
@@ -10,89 +41,78 @@ bool Score::Start()
 
 	SpriteRenderList();
 
-	SetTextOption(400.0f, 500.0f, 1.5f, g_vec4Yellow, &m_scoreFontRender, L"スコア");
+	SetTextOption(SCORE_TEXT_VIEW_POSITION.x, SCORE_TEXT_VIEW_POSITION.y,
+		SCORE_TEXT_VIEW_SCALE, g_vec4Yellow, &m_scoreFontRender, L"スコア");
 
 	return true;
 }
 
 void Score::Update()
 {
-	/*チュートリアル～リザルトの間、常にステージとプレイヤーは表示する。
-	　インゲーム（スタート～終了）の間だけスコアを表示するためにフラグで管理する。*/
-	if (m_game->GetGameEndFlag()) { return; }				//ゲーム終了のフラグ
-	if (m_game->GetGameStartFlag() == false) { return; }	//ゲーム開始のフラグ
+	/// <summary>
+	/// チュートリアル～リザルトの間、常にステージとプレイヤーは表示する。
+	/// インゲーム（スタート～終了）の間だけスコアを表示するためにフラグで管理する。
+	/// </summary>
+	if (!m_game->GetGameStartFlag())
+	{
+		return;
+	}
 
 	TotalScoreCalc();
 
-	SetTextOption(410.0f, 430.0f, 1.5f, g_vec4Yellow, &m_totalScoreFontRender, L"%d", m_totalScore);
+	/// <summary>
+	/// 合計スコアのフォントレンダーを設定。
+	/// </summary>
+	SetTextOption(TOTAL_SCORE_FONT_POSITION.x, TOTAL_SCORE_FONT_POSITION.y,
+		TOTAL_SCORE_FONT_SCALE, g_vec4Yellow, &m_totalScoreFontRender, L"%d", m_totalScore);
 
-	/// {表示したい変数(intのみ) , x座標 , y座標 , サイズ , 色}
-	FontOption text[StarKinds_Num];
-	text[enStarKinds_Red] = { m_starCount[enStarKinds_Red],-850.0f,420.0f,1.3f,g_vec4White };
-	text[enStarKinds_Orange] = { m_starCount[enStarKinds_Orange],-850.0f,370.0f,1.3f,g_vec4White };
-	text[enStarKinds_Purple] = { m_starCount[enStarKinds_Purple],-850.0f,320.0f,1.3f,g_vec4White };
-	text[enStarKinds_Blue] = { m_starCount[enStarKinds_Blue],-850.0f,270.0f,1.3f,g_vec4White };
-	text[enStarKinds_Green] = { m_starCount[enStarKinds_Green],-850.0f,220.0f,1.3f,g_vec4White };
-	text[enStarKinds_Normal] = { m_starCount[enStarKinds_Normal],-850.0f,170.0f,1.3f,g_vec4White };
-
-	for (int i = 0; i < StarKinds_Num; i++)
+	/// <summary>
+	/// 各種スターの取得数のフォントレンダーを設定。
+	/// </summary>
+	for (int i = 0; i < enStarKinds_Num; i++)
 	{
-		SetTextOption(text[i].pos_x, text[i].pos_y, text[i].scale, text[i].textColor, &m_getStarCountFontRender[i], L"%d", text[i].data);
+		SetTextOption(STAR_COUNT_VIEW_POSITION[i].x, STAR_COUNT_VIEW_POSITION[i].y,
+			STAR_COUNT_VIEW_SCALE, g_vec4White, &m_getStarCountFontRender[i], L"%d", m_starCount[i]);
 	}
 
 }
 
 void Score::Render(RenderContext& rc)
 {
-	if (m_game->GetGameEndFlag() == false)
+	/// <summary>
+	/// チュートリアル～リザルトの間、常にステージとプレイヤーは表示する。
+	/// インゲーム（スタート～終了）の間だけスコアを表示するためにフラグで管理する。
+	/// </summary>
+	if (!m_game->GetGameStartFlag())
 	{
-		if (m_game->GetGameStartFlag())
-		{
-			m_scoreFontRender.Draw(rc);
-			m_totalScoreFontRender.Draw(rc);
+		return;
+	}
 
-			for (int i = 0; i < StarKinds_Num; i++)
-			{
-				m_getStarCountFontRender[i].Draw(rc);
-			}
+	m_scoreFontRender.Draw(rc);
+	m_totalScoreFontRender.Draw(rc);
 
-			for (int j = 0; j < StarKinds_Num; j++)
-			{
-				m_starSpriteRender[j].Draw(rc);
-			}
-		}
+	for (FontRender& getStarCount : m_getStarCountFontRender)
+	{
+		getStarCount.Draw(rc);
+	}
+
+	for (SpriteRender& star : m_starSpriteRender)
+	{
+		star.Draw(rc);
 	}
 }
-
-///////////////////////////////////////////////////////////////////
-// ここからメソッドまとめ。
-///////////////////////////////////////////////////////////////////
 
 /// <summary>
 /// スプライトレンダーまとめ
 /// </summary>
 void Score::SpriteRenderList()
 {
-	m_starSpriteRender[enStarKinds_Red].Init("Assets/sprite/redStar.dds", 50.0f, 50.0f);
-	m_starSpriteRender[enStarKinds_Red].SetPosition({ -900,400,0 });
+	SpriteManager* spriteManager = FindGO<SpriteManager>("spritemanager");
 
-	m_starSpriteRender[enStarKinds_Orange].Init("Assets/sprite/orangeStar.dds", 50.0f, 50.0f);
-	m_starSpriteRender[enStarKinds_Orange].SetPosition({ -900,350,0 });
-
-	m_starSpriteRender[enStarKinds_Purple].Init("Assets/sprite/purpleStar.dds", 50.0f, 50.0f);
-	m_starSpriteRender[enStarKinds_Purple].SetPosition({ -900,300,0 });
-
-	m_starSpriteRender[enStarKinds_Blue].Init("Assets/sprite/blueStar.dds", 50.0f, 50.0f);
-	m_starSpriteRender[enStarKinds_Blue].SetPosition({ -900,250,0 });
-
-	m_starSpriteRender[enStarKinds_Green].Init("Assets/sprite/greenStar.dds", 50.0f, 50.0f);
-	m_starSpriteRender[enStarKinds_Green].SetPosition({ -900,200,0 });
-
-	m_starSpriteRender[enStarKinds_Normal].Init("Assets/sprite/normalStar.dds", 50.0f, 50.0f);
-	m_starSpriteRender[enStarKinds_Normal].SetPosition({ -900,150,0 });
-
-	for (int i = 0; i < StarKinds_Num; i++)
+	for (int i = 0; i < enStarKinds_Num; i++)
 	{
+		spriteManager->SpriteInit(m_starSpriteRender[i], enSpriteKinds_RedStar + i);
+		m_starSpriteRender[i].SetPosition(STAR_SPRITE_SCALE[i]);
 		m_starSpriteRender[i].Update();
 	}
 }
@@ -106,4 +126,3 @@ void Score::TotalScoreCalc()
 		+ m_starCount[enStarKinds_Green] * GREEN_STAR_POINT
 		+ m_starCount[enStarKinds_Normal] * NORMAL_STAR_POINT;
 }
-

@@ -17,10 +17,10 @@ public:
 		enLoadingPhase_Fourth,	// ロードの進捗4/6を示す。
 		enLoadingPhase_Fifth,	// ロードの進捗5/6を示す。
 		enLoadingPhase_Sixth,	// ロードの進捗6/6を示す。
-		Phase_Num
+		enLoadingPhase_Num
 	};
 
-	bool showLoadingPhases[Phase_Num] = { false };	// この配列でロードの進捗を示すスターの初期化と位置設定を行います。
+	bool showLoadingPhases[enLoadingPhase_Num] = { false };	// この配列でロードの進捗を示すスターの初期化と位置設定を行います。
 
 	~LoadingView();
 
@@ -31,6 +31,6 @@ private:
 
 	SpriteRender m_LoadingSceneSpriteRender;				// ロード画面の背景を表示します。
 	FontRender m_pushA_FontRender;							// 「PUSH(A)」と表示します。
-	SpriteRender m_LoadingPhaseSpriteRenders[Phase_Num];	// ロードの進捗に合わせてスターを表示します。
+	SpriteRender m_LoadingPhaseSpriteRenders[enLoadingPhase_Num];	// ロードの進捗に合わせてスターを表示します。
 };
 

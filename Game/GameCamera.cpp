@@ -4,20 +4,23 @@
 
 namespace
 {
-	const float ROT_SPEED = 1.3f;			// カメラの回転速度を設定します。
-	const float CAMERA_VECTOR_MAX = 0.9f;	// カメラ回転の上限を設定します。
-	const float CAMERA_VECTOR_MIN = -0.2f;	// カメラ回転の下限を設定します。
+	const Vector3 TO_CAMERA_POS_VECTOR = { 0.0f, 600.0f, -700.0f };	// 注視点から視点までのベクトル。
+	const float CAMERA_NEAR = 1.0f;									// 近平面。
+	const float CAMERA_FAR = 5000.0f;								// 遠平面。
+	const float ROT_SPEED = 1.3f;									// カメラの回転速度を設定します。
+	const float CAMERA_VECTOR_MAX = 0.9f;							// カメラ回転の上限を設定します。
+	const float CAMERA_VECTOR_MIN = -0.2f;							// カメラ回転の下限を設定します。
 }
 
 bool GameCamera::Start()
 {
 	// 注視点から視点までのベクトルを設定します。
-	m_toCameraPos.Set(0.0f, 600.0f, -700.0f);
+	m_toCameraPos.Set(TO_CAMERA_POS_VECTOR);
 
 	m_player = FindGO<Player>("player");
 
-	g_camera3D->SetNear(1.0f);
-	g_camera3D->SetFar(5000.0f);
+	g_camera3D->SetNear(CAMERA_NEAR);
+	g_camera3D->SetFar(CAMERA_FAR);
 
 	return true;
 }

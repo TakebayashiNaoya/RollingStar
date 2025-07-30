@@ -21,6 +21,8 @@ enum EnSoundList
 class SoundManager :public IGameObject
 {
 public:
+	SoundManager();
+
 	/// <summary>
 	/// 新しいゲームオブジェクトのサウンドを開始します。
 	/// </summary>
@@ -34,6 +36,6 @@ public:
 	void SoundDeleteGO(int a);
 
 private:
-	SoundSource* sound[enSoundList_Num];
+	SoundSource* sound[enSoundList_Num] = {};
 };
 

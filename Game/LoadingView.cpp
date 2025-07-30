@@ -3,12 +3,26 @@
 #include "SoundManager.h"
 #include "Tutorial.h"
 #include "Type.h"
+#include "SpriteManager.h"
 
 namespace
 {
 	const Vector4 FONT_COLOR = { 0.9f, 0.9f, 1.0f, 1.0f };	// 青みがかった白。
 	const Vector2 FONT_POSITION = { 450.0f, -350.0f };		// PUSH(A)の位置。
 	const float FONT_SIZE = 2.0f;							// PUSH(A)のサイズ。
+
+	/// <summary>
+	/// ロード画面の星の位置を表す3次元ベクトルの定数配列です。
+	/// </summary>
+	const Vector3 LOADING_VIEW_STAR_POSITIONS[] =
+	{
+		{-319.0f, -393.5f,0.0f},	// 1。
+		{-193.0f, -393.5f,0.0f},	// 2。
+		{-65.0f, -393.5f,0.0f},		// 3。
+		{64.0f, -393.5f,0.0f},		// 4。
+		{190.0f, -393.5f,0.0f},		// 5。
+		{317.0f, -393.5f,0.0f}		// 6。
+	};
 }
 
 LoadingView::~LoadingView()
@@ -18,29 +32,16 @@ LoadingView::~LoadingView()
 
 bool LoadingView::Start()
 {
-	m_LoadingSceneSpriteRender.Init("Assets/sprite/LoadingView.dds", 1920.0f, 1080.0f);
+	SpriteManager* spriteManager = FindGO<SpriteManager>("spritemanager");
 
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_First].Init("Assets/sprite/neonNormalStar.dds", 120.0f, 120.0f);
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_First].SetPosition({ -319.0f, -393.5f, 0.0f });
+	spriteManager->SpriteInit(m_LoadingSceneSpriteRender, enSpriteKinds_LoadingView);
 
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_Second].Init("Assets/sprite/neonGreenStar.dds", 120.0f, 120.0f);
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_Second].SetPosition({ -193.0f, -393.5f, 0.0f });
-
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_Third].Init("Assets/sprite/neonBlueStar.dds", 120.0f, 120.0f);
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_Third].SetPosition({ -65.0f, -393.5f, 0.0f });
-
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_Fourth].Init("Assets/sprite/neonPurpleStar.dds", 120.0f, 120.0f);
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_Fourth].SetPosition({ 64.0f, -393.5f, 0.0f });
-
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_Fifth].Init("Assets/sprite/neonOrangeStar.dds", 120.0f, 120.0f);
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_Fifth].SetPosition({ 190.0f, -393.5f, 0.0f });
-
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_Sixth].Init("Assets/sprite/neonRedStar.dds", 120.0f, 120.0f);
-	m_LoadingPhaseSpriteRenders[enLoadingPhase_Sixth].SetPosition({ 317.0f, -393.5f, 0.0f });
-
-	for (auto& sprite : m_LoadingPhaseSpriteRenders)
+	for (int i = 0; i < enLoadingPhase_Num; i++)
 	{
-		sprite.Update();
+		// SpriteManagerではenumが2から始まっているため、Phase数を加算する。
+		spriteManager->SpriteInit(m_LoadingPhaseSpriteRenders[i], enSpriteKinds_NeonNormalStar + i);
+		m_LoadingPhaseSpriteRenders[i].SetPosition(LOADING_VIEW_STAR_POSITIONS[i]);
+		m_LoadingPhaseSpriteRenders[i].Update();
 	}
 
 	return true;
@@ -50,7 +51,7 @@ void LoadingView::Update()
 {
 	if (showLoadingPhases[enLoadingPhase_Sixth])
 	{
-		SetTextOption(FONT_POSITION.x, -FONT_POSITION.y, FONT_SIZE, FONT_COLOR, &m_pushA_FontRender, L"PUSH (A) ");
+		SetTextOption(FONT_POSITION.x, FONT_POSITION.y, FONT_SIZE, FONT_COLOR, &m_pushA_FontRender, L"PUSH (A) ");
 
 		if (g_pad[0]->IsTrigger(enButtonA))
 		{
@@ -62,12 +63,11 @@ void LoadingView::Update()
 	}
 }
 
-
 void LoadingView::Render(RenderContext& rc)
 {
 	m_LoadingSceneSpriteRender.Draw(rc);
 
-	for (int i = 0; i < Phase_Num; i++)
+	for (int i = 0; i < enLoadingPhase_Num; i++)
 	{
 		if (showLoadingPhases[i])
 		{

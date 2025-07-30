@@ -11,11 +11,44 @@
 #include "Star.h"
 #include "Title.h"
 #include <algorithm>
+#include "SpriteManager.h"
 
 namespace
 {
-	const float FONT_SPACE = -200.0f;
-	const float DRAW_SWITCH_DELAY = 3.0f;
+	const float FONT_SPACE = -200.0f;		// ランキングの1～3位のスコアの表示間隔。
+	const float DRAW_SWITCH_DELAY = 3.0f;	// 画面遷移させるまでの時間。
+
+	/// <summary>
+	/// この定数はランキングUIの各位置を定義します。
+	/// </summary>
+	const Vector3 RANKING_UI_POSITION[] =
+	{
+		{0.0f,350.0f,0.0f},			// 「ランキング」。
+		{-300.0f,180.0f,0.0f},		// 金冠。
+		{ -300.0f,-20.0f,0.0f },	// 銀冠。
+		{ -300.0f,-220.0f,0.0f },	// 銅冠。
+		{ 300.0f,-400.0f,0.0f }		// 「Aを押してタイトルへ」。
+	};
+
+	const Vector2 TOTAL_SCORE_FONT_POSITION = { -250.0f, 230.0f };	// 合計スコアのフォントを表示する位置。
+	const float TOTAL_SCORE_FONT_SCALE = 4.0f;						// 合計スコアのフォントサイズ。
+
+	/// <summary>
+	/// スターの獲得数を表示するフォントの各座標を定義します。
+	/// </summary>
+	const Vector2 GOT_STAR_COUNT_FONT_POSITIONS[] =
+	{
+		{410.0f,-160.0f},	// レッドスター。
+		{0.0f,-160.0f},		// オレンジスター。
+		{-360.0f,-160.0f},	// パープルスター。
+		{410.0f,-20.0f},	// ブルースター。
+		{0.0f,-20.0f},		// グリーンスター。
+		{-360.0f,-20.0f}	// ノーマルスター。
+	};
+	const float GOT_STAR_COUNT_FONT_SCALE = 2.0f;					// スターの獲得数を表示するフォントサイズ。
+
+	const Vector2 RANKING_SCORE_FONT_POSITION = { -120.0f, 220.0f };// ランキングのスコアを表示する位置。
+	const float RANKING_SCORE_FONT_SCALE = 2.0f;					// ランキングのスコアのフォントサイズ。
 }
 
 ResultView::~ResultView()
@@ -25,190 +58,173 @@ ResultView::~ResultView()
 
 bool ResultView::Start()
 {
-	m_endSpriteRender.Init("Assets/sprite/end.dds", 1920.0f, 1080.0f);
-	m_resultSpriteRender.Init("Assets/sprite/result.dds", 1280.0f, 900.0f);
-	m_backScreenSpriteRender.Init("Assets/sprite/backBlack.dds", 1280.0f, 900.0f);
-	m_spriteRender = &m_endSpriteRender;
+	SpriteManager* spriteManager = FindGO<SpriteManager>("spritemanager");
 
-	RankingUI_InitSetList();
+	for (int i = 0; i < enViewStates_Num; i++)
+	{
+		spriteManager->SpriteInit(m_spriteRenders[i], enSpriteKinds_End + i);
+	}
+
+	SetupRankingUI();
 
 	m_game = FindGO<Game>("game");
 	m_gameTimer = FindGO<GameTimer>("gametimer");
 	m_score = FindGO<Score>("score");
 	m_saveData = FindGO<SaveData>("savedata");
 
-
 	return true;
 }
 
 void ResultView::Update()
 {
-	if (m_game->GetGameEndFlag())
+	if (!m_game->GetGameEndFlag())
 	{
-		switch (m_viewState)
+		return;
+	}
+
+	switch (m_viewState)
+	{
+	case enViewStates_GameEnd:
+
+		// 一度だけ終了サウンドを鳴らします。
+		if (onceEndSE)
 		{
-		case enViewStates_GameEnd:
+			SoundManager* soundManager = FindGO<SoundManager>("soundmanager");
+			soundManager->SoundNewGO(enSoundList_EndSE);
+			onceEndSE = false;
+		}
 
-			m_spriteRender = &m_endSpriteRender;
+		// タイムアップから3秒後にリザルト表示します。
+		m_timerToResult += g_gameTime->GetFrameDeltaTime();
+		if (m_timerToResult >= DRAW_SWITCH_DELAY)
+		{
+			m_viewState = enViewStates_Result;
+		}
 
-			// 一度だけ終了サウンドを鳴らします。
-			if (onceEndSE)
-			{
-				SoundManager* soundManager = FindGO<SoundManager>("soundmanager");
-				soundManager->SoundNewGO(enSoundList_EndSE);
-				onceEndSE = false;
-			}
+		break;
 
-			// タイムアップから3秒後にリザルト表示します。
-			m_timerToResult += g_gameTime->GetFrameDeltaTime();
-			if (m_timerToResult >= DRAW_SWITCH_DELAY)
-			{
-				m_viewState = enViewStates_Result;
-			}
+	case enViewStates_Result:
 
-			break;
+		SetupTotalScoreFontRender();
+		SetupGotStarCountFontRender();
 
-		case enViewStates_Result:
+		// 一度だけ歓声SEを鳴らします。
+		if (onceCallSE)
+		{
+			SoundManager* soundManager = FindGO<SoundManager>("soundmanager");
+			soundManager->SoundNewGO(enSoundList_CallSE);
+			onceCallSE = false;
+		}
 
-			m_spriteRender = &m_resultSpriteRender;
+		// Aを押したらランキングビューへ遷移します。
+		if (g_pad[0]->IsTrigger(enButtonA))
+		{
+			SoundManager* soundManager = FindGO<SoundManager>("soundmanager");
+			soundManager->SoundNewGO(enSoundList_SelectSE);
 
-			SetTotalScoreFontRender();
-			SetGotStarCountFontRender();
+			m_viewState = enViewStates_Rankings;
+		}
 
-			// 一度だけ歓声SEを鳴らします。
-			if (onceCallSE)
-			{
-				SoundManager* soundManager = FindGO<SoundManager>("soundmanager");
-				soundManager->SoundNewGO(enSoundList_CallSE);
-				onceCallSE = false;
-			}
+		break;
 
-			if (g_pad[0]->IsTrigger(enButtonA))
-			{
-				SoundManager* soundManager = FindGO<SoundManager>("soundmanager");
-				soundManager->SoundNewGO(enSoundList_SelectSE);
+	case enViewStates_Rankings:
 
-				m_viewState = enViewStates_Rankings;
-			}
+		// 一度だけセーブします。
+		if (onceSaveScore)
+		{
+			m_saveData->m_scoreRankList.push_back(m_score->GetTotalScore());
+			onceSaveScore = false;
+		}
 
-			break;
+		// 過去のスコアのセーブデータを昇順にソートします。
+		std::sort(m_saveData->m_scoreRankList.begin(), m_saveData->m_scoreRankList.end(), [](int a, int b) {return a > b; });
 
-		case enViewStates_Rankings:
+		SetupScoreOfRankFontRenderList();
 
-			m_spriteRender = &m_backScreenSpriteRender;
+		if (g_pad[0]->IsTrigger(enButtonA))
+		{
+			SoundManager* soundManager = FindGO<SoundManager>("soundmanager");
+			soundManager->SoundNewGO(enSoundList_SelectSE);
 
-			// 一度だけセーブします。
-			if (onceSaveScore)
-			{
-				m_saveData->m_scoreRankList.push_back(m_score->GetTotalScore());
-				onceSaveScore = false;
-			}
+			m_title = NewGO<Title>(0, "title");
 
-			std::sort(m_saveData->m_scoreRankList.begin(), m_saveData->m_scoreRankList.end(), [](int a, int b) {return a > b; });
-
-			SetScoreOfRankFontRenderList();
-
-			if (g_pad[0]->IsTrigger(enButtonA))
-			{
-				SoundManager* soundManager = FindGO<SoundManager>("soundmanager");
-				soundManager->SoundNewGO(enSoundList_SelectSE);
-
-				m_title = NewGO<Title>(0, "title");
-
-				DeleteGO(this);
-			}
-
+			DeleteGO(this);
 		}
 	}
 }
 
 void ResultView::Render(RenderContext& rc)
 {
-	if (m_game->GetGameEndFlag())
+	if (!m_game->GetGameEndFlag())
 	{
-		m_spriteRender->Draw(rc);
+		return;
+	}
 
-		switch (m_viewState)
+	m_spriteRender = &m_spriteRenders[m_viewState];
+	m_spriteRender->Draw(rc);
+
+	switch (m_viewState)
+	{
+	case enViewStates_Result:
+
+		m_totalScoreFontRender.Draw(rc);
+
+		for (FontRender& gotStarCount : m_gotStarCountFontRenderList)
 		{
-		case enViewStates_Result:
+			gotStarCount.Draw(rc);
+		}
+		break;
 
-			m_totalScoreFontRender.Draw(rc);
+	case enViewStates_Rankings:
 
-			for (int i = 0; i < StarKinds_Num; i++)
-			{
-				m_gotStarCountFontRenderList[i].Draw(rc);
-			}
-			break;
+		for (SpriteRender& ui : m_spritesForRankingView)
+		{
+			ui.Draw(rc);
+		}
 
-		case enViewStates_Rankings:
-
-			for (int i = 0; i < SpritesForRankingView_Num; i++)
-			{
-				m_spritesForRankingView[i].Draw(rc);
-			}
-
-			for (int i = 0; i < Ranking_Num; i++)
-			{
-				m_scoreOfRankFontRenderList[i].Draw(rc);
-			}
+		for (FontRender& score : m_scoreOfRankFontRenderList)
+		{
+			score.Draw(rc);
 		}
 	}
 }
 
-//ランキングで表示するUI
-void ResultView::RankingUI_InitSetList()
+void ResultView::SetupRankingUI()
 {
-	m_spritesForRankingView[enSpritesForRankingView_Ranking].Init("Assets/sprite/ranking.dds", 500.0f, 100.0f);
-	m_spritesForRankingView[enSpritesForRankingView_Ranking].SetPosition({ 0.0f,350.0f,0.0f });
+	SpriteManager* spriteManager = FindGO<SpriteManager>("spritemanager");
 
-	m_spritesForRankingView[enSpritesForRankingView_GoldCrown].Init("Assets/sprite/goldCrown.dds", 100.0f, 100.0f);
-	m_spritesForRankingView[enSpritesForRankingView_GoldCrown].SetPosition({ -300.0f,180.0f,0.0f });
-
-	m_spritesForRankingView[enSpritesForRankingView_SilverCrown].Init("Assets/sprite/silverCrown.dds", 100.0f, 100.0f);
-	m_spritesForRankingView[enSpritesForRankingView_SilverCrown].SetPosition({ -300.0f,-20.0f,0.0f });
-
-	m_spritesForRankingView[enSpritesForRankingView_BronzeCrown].Init("Assets/sprite/bronzeCrown.dds", 100.0f, 100.0f);
-	m_spritesForRankingView[enSpritesForRankingView_BronzeCrown].SetPosition({ -300.0f,-220.0f,0.0f });
-
-	m_spritesForRankingView[enSpritesForRankingView_PushA].Init("Assets/sprite/pushAtoTitle.dds", 600.0f, 100.0f);
-	m_spritesForRankingView[enSpritesForRankingView_PushA].SetPosition({ 300.0f,-400.0f,0.0f });
-
-	for (int i = 0; i < SpritesForRankingView_Num; i++)
+	for (int i = 0; i < enSpritesForRankingView_Num; i++)
 	{
+		spriteManager->SpriteInit(m_spritesForRankingView[i], enSpriteKinds_Ranking + i);
+		m_spritesForRankingView[i].SetPosition(RANKING_UI_POSITION[i]);
 		m_spritesForRankingView[i].Update();
 	}
 }
 
-void ResultView::SetTotalScoreFontRender()
+void ResultView::SetupTotalScoreFontRender()
 {
-	SetTextOption(-250.0f, 230.0f, 4.0f, g_vec4White, &m_totalScoreFontRender, L"%d", m_score->GetTotalScore());
+	SetTextOption(TOTAL_SCORE_FONT_POSITION.x, TOTAL_SCORE_FONT_POSITION.y, TOTAL_SCORE_FONT_SCALE,
+		g_vec4White, &m_totalScoreFontRender, L"%d", m_score->GetTotalScore());
 }
 
-void ResultView::SetGotStarCountFontRender()
+void ResultView::SetupGotStarCountFontRender()
 {
-	/// {表示したい変数(intのみ) , x座標 , y座標 , サイズ , 色}
-	FontOption text[StarKinds_Num];
-	text[enStarKinds_Red] = { m_score->GetStarCount(enStarKinds_Red),410.0f,-160.0f,2.0f,g_vec4White };
-	text[enStarKinds_Orange] = { m_score->GetStarCount(enStarKinds_Orange),0.0f,-160.0f,2.0f,g_vec4White };
-	text[enStarKinds_Purple] = { m_score->GetStarCount(enStarKinds_Purple),-360.0f,-160.0f,2.0f,g_vec4White };
-	text[enStarKinds_Blue] = { m_score->GetStarCount(enStarKinds_Blue),410.0f,-20.0f,2.0f,g_vec4White };
-	text[enStarKinds_Green] = { m_score->GetStarCount(enStarKinds_Green),0.0f,-20.0f,2.0f,g_vec4White };
-	text[enStarKinds_Normal] = { m_score->GetStarCount(enStarKinds_Normal),-360.0f,-20.0f,2.0f,g_vec4White };
-
-	for (int i = 0; i < StarKinds_Num; i++)
+	for (int i = 0; i < enStarKinds_Num; i++)
 	{
-		SetTextOption(text[i].pos_x, text[i].pos_y, text[i].scale, text[i].textColor, &m_gotStarCountFontRenderList[i], L"%d", text[i].data);
+		SetTextOption(GOT_STAR_COUNT_FONT_POSITIONS[i].x, GOT_STAR_COUNT_FONT_POSITIONS[i].y,
+			GOT_STAR_COUNT_FONT_SCALE, g_vec4White, &m_gotStarCountFontRenderList[i], L"%d", m_score->GetStarCount(i));
 	}
 }
 
-void ResultView::SetScoreOfRankFontRenderList()
+void ResultView::SetupScoreOfRankFontRenderList()
 {
-	for (int i = 0; i < Ranking_Num; i++)
+	for (int i = 0; i < enRanking_Num; i++)
 	{
-		SetTextOption(-120.0f, 220.0f + FONT_SPACE * i, 2.0f, g_vec4White, &m_scoreOfRankFontRenderList[i], L"%d", m_saveData->m_scoreRankList[i]);
+		SetTextOption(RANKING_SCORE_FONT_POSITION.x, RANKING_SCORE_FONT_POSITION.y + FONT_SPACE * i,
+			RANKING_SCORE_FONT_SCALE, g_vec4White, &m_scoreOfRankFontRenderList[i], L"%d", m_saveData->m_scoreRankList[i]);
 	}
 
-	for (int i = 0; i < Ranking_Num; i++)
+	for (int i = 0; i < enRanking_Num; i++)
 	{
 		if (m_saveData->m_scoreRankList[i] == m_score->GetTotalScore())
 		{

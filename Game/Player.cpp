@@ -5,26 +5,50 @@
 
 namespace
 {
-	const float FIX_ZERO = 0.0f;			// 0.0fで固定するための定数です。
-	const float FIX_ONE = 1.0f;				// プレイヤーは動かさず入力のみ得たいため。
-	const float STICK_INPUT_JUDGE = 0.001f;	// スティックの入力を判定する数値です。
-	const float RESET_ZERO = 0.0f;			// 0.0fで初期化するための定数です。
-	const float GRAVITY = 2.5f;				// 重力の強さを設定します。
-	const float JUMP_SPEED = 240.0f;		// ジャンプの上昇スピードを設定します。
+	const char* ANIMATION_FILE_PATH = "Assets/animData/";
+
+	/// <summary>
+	/// アニメーションファイルのオプションを管理する構造体です。
+	/// </summary>
+	struct AnimationOption
+	{
+		const char* fileName;	// ファイルパス。
+		bool is_loop = false;	// リピートするかどうか。（true=する、false=しない）
+
+		std::string GetFullPath() const
+		{
+			return std::string(ANIMATION_FILE_PATH) + fileName;
+		}
+	};
+
+	/// <summary>
+	/// アニメーションのオプションを定義する定数配列です。
+	/// </summary>
+	const AnimationOption MODEL_LIST[] =
+	{
+		{"idle.tka",true},
+		{"walk.tka",true},
+		{"jump.tka",false}
+	};
+
+	const float CAPSULE_COLLIDET_RADIUS = 25.0f;	// カプセルコライダーの半径です。
+	const float CAPSULE_COLLIDET_HEIGHT = 75.0f;	// カプセルコライダーの高さです。
+
+	const float FIX_ZERO = 0.0f;					// 0.0fで固定するための定数です。
+	const float FIX_ONE = 1.0f;						// プレイヤーは動かさず入力のみ得たいため。
+	const float STICK_INPUT_JUDGE = 0.001f;			// スティックの入力を判定する数値です。
+	const float RESET_ZERO = 0.0f;					// 0.0fで初期化するための定数です。
+	const float GRAVITY = 2.5f;						// 重力の強さを設定します。
+	const float JUMP_SPEED = 240.0f;				// ジャンプの上昇スピードを設定します。
 }
 
 bool Player::Start()
 {
-	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/idle.tka");
-	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_Walk].Load("Assets/animData/walk.tka");
-	m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_Jump].Load("Assets/animData/jump.tka");
-	m_animationClips[enAnimationClip_Jump].SetLoopFlag(false);
+	SetAnimationClips();
 
 	m_modelRender.Init("Assets/modelData/unityChan.tkm", m_animationClips, enAnimationClip_Num, enModelUpAxisY);
 
-	m_characterController.Init(25.0f, 75.0f, m_position);
+	m_characterController.Init(CAPSULE_COLLIDET_RADIUS, CAPSULE_COLLIDET_HEIGHT, m_position);
 
 	m_game = FindGO<Game>("game");
 
@@ -36,14 +60,25 @@ void Player::Update()
 {
 	Move();
 	Rotation();
+
 	ManageState();
-	PlayAnimation();
+	m_modelRender.PlayAnimation(m_playerState);
+
 	m_modelRender.Update();
 }
 
 void Player::Render(RenderContext& rc)
 {
 	m_modelRender.Draw(rc);
+}
+
+void Player::SetAnimationClips()
+{
+	for (int animKinds = 0; animKinds < enAnimationClip_Num; animKinds++)
+	{
+		m_animationClips[animKinds].Load(MODEL_LIST[animKinds].GetFullPath().c_str());
+		m_animationClips[animKinds].SetLoopFlag(MODEL_LIST[animKinds].is_loop);
+	}
 }
 
 void Player::Move()
@@ -108,7 +143,7 @@ void Player::Rotation()
 
 void Player::ManageState()
 {
-	if (m_characterController.IsOnGround() == false)
+	if (!m_characterController.IsOnGround())
 	{
 		m_playerState = enAnimationClip_Jump;
 		return;
@@ -123,20 +158,3 @@ void Player::ManageState()
 		m_playerState = enAnimationClip_Idle;
 	}
 }
-
-void Player::PlayAnimation()
-{
-	switch (m_playerState)
-	{
-	case enAnimationClip_Idle:
-		m_modelRender.PlayAnimation(enAnimationClip_Idle);
-		break;
-	case enAnimationClip_Walk:
-		m_modelRender.PlayAnimation(enAnimationClip_Walk);
-		break;
-	case enAnimationClip_Jump:
-		m_modelRender.PlayAnimation(enAnimationClip_Jump);
-		break;
-	}
-}
-

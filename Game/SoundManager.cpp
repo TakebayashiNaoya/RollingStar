@@ -31,6 +31,14 @@ namespace
 	};
 }
 
+SoundManager::SoundManager()
+{
+	for (int i = 0; i < enSoundList_Num; ++i)
+	{
+		sound[i] = nullptr;
+	}
+}
+
 void SoundManager::SoundNewGO(int a)
 {
 	sound[a] = NewGO<SoundSource>(0);
@@ -42,5 +50,11 @@ void SoundManager::SoundNewGO(int a)
 
 void SoundManager::SoundDeleteGO(int a)
 {
-	DeleteGO(sound[a]);
+	if (a < 0 || a >= enSoundList_Num) return;
+
+	if (sound[a]) // 有効なポインタかチェック
+	{
+		DeleteGO(sound[a]);
+		sound[a] = nullptr; // 削除済みマーク
+	}
 }

@@ -46,7 +46,7 @@ void BackGround::Render(RenderContext& rc)
 
 void BackGround::Rotation()
 {
-	if (m_game->GetGameStartFlag() == false)
+	if (!m_game->GetGameStartFlag())
 	{
 		return;
 	}

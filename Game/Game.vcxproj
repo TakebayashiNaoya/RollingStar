@@ -237,6 +237,7 @@
     <ClCompile Include="SaveData.cpp" />
     <ClCompile Include="Score.cpp" />
     <ClCompile Include="SoundManager.cpp" />
+    <ClCompile Include="SpriteManager.cpp" />
     <ClCompile Include="Star.cpp" />
     <ClCompile Include="StarSpawner.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -264,6 +265,7 @@
     <ClInclude Include="SaveData.h" />
     <ClInclude Include="Score.h" />
     <ClInclude Include="SoundManager.h" />
+    <ClInclude Include="SpriteManager.h" />
     <ClInclude Include="Star.h" />
     <ClInclude Include="StarSpawner.h" />
     <ClInclude Include="stdafx.h" />

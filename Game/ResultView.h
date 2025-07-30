@@ -25,7 +25,8 @@ private:
 	{
 		enViewStates_GameEnd,	//ゲーム終了画面を表示
 		enViewStates_Result,	//リザルト画面を表示
-		enViewStates_Rankings	//ランキングを表示
+		enViewStates_Rankings,	//ランキングを表示
+		enViewStates_Num
 	};
 
 	/// <summary>
@@ -38,7 +39,7 @@ private:
 		enSpritesForRankingView_SilverCrown,	// 銀冠のイラスト。
 		enSpritesForRankingView_BronzeCrown,	// 銅冠のイラスト。
 		enSpritesForRankingView_PushA,			// 「Push(A)」文字列の画像。
-		SpritesForRankingView_Num
+		enSpritesForRankingView_Num
 	};
 
 	/// <summary>
@@ -46,10 +47,10 @@ private:
 	/// </summary>
 	enum EnRanking
 	{
-		enRanking_1st,	// 1位。
-		enRanking_2nd,	// 2位。
-		enRanking_3rd,	// 3位。
-		Ranking_Num
+		enRanking_First,	// 1位。
+		enRanking_Second,	// 2位。
+		enRanking_Third,	// 3位。
+		enRanking_Num
 	};
 
 public:
@@ -63,22 +64,22 @@ private:
 	/// <summary>
 	/// ランキングUIのリストを初期化して設定します。
 	/// </summary>
-	void RankingUI_InitSetList();
+	void SetupRankingUI();
 
 	/// <summary>
-	/// 合計スコアのフォントレンダリングを設定します。
+	/// 合計スコアのフォントを設定します。
 	/// </summary>
-	void SetTotalScoreFontRender();
+	void SetupTotalScoreFontRender();
 
 	/// <summary>
-	/// スター獲得数のフォントレンダリングを設定します。
+	/// スター獲得数のフォントを設定します。
 	/// </summary>
-	void SetGotStarCountFontRender();
+	void SetupGotStarCountFontRender();
 
 	/// <summary>
-	/// ランクフォントレンダーリストのスコアを設定します。
+	/// セーブデータの上3つのスコアのフォントを設定して表示します。
 	/// </summary>
-	void SetScoreOfRankFontRenderList();
+	void SetupScoreOfRankFontRenderList();
 
 	BackGround* m_backGround = nullptr;
 	Game* m_game = nullptr;
@@ -90,31 +91,14 @@ private:
 	Star* m_star = nullptr;
 	Title* m_title = nullptr;
 
-	/// <summary>
-	/// 常時表示しているm_spriteRenderに入れて切り替えます。
-	/// </summary>
-	SpriteRender m_endSpriteRender;			//「FINISH」の画像を表示。
-	SpriteRender m_resultSpriteRender;		// リザルト画面を表紙。
-	SpriteRender m_backScreenSpriteRender;	// ランキング画面で半透明の黒背景を表示。
-	SpriteRender* m_spriteRender = nullptr;
+	SpriteRender* m_spriteRender = nullptr;								// m_spriteRendersを代入して常時表示します。
+	SpriteRender m_spriteRenders[enViewStates_Num];						// 「FINISH」→リザルト→ランキングのスプライトを格納します。
 
 	EnViewStates m_viewState = enViewStates_GameEnd;					// 終了→リザルト→ランキングのステートを格納します。
-	SpriteRender m_spritesForRankingView[SpritesForRankingView_Num];	// ランキング画面で表示するUIを配列で格納します。
+	SpriteRender m_spritesForRankingView[enSpritesForRankingView_Num];	// ランキング画面で表示するUIを配列で格納します。
 	FontRender m_totalScoreFontRender;									// 合計スコアを表示します。
-	FontRender m_gotStarCountFontRenderList[StarKinds_Num];				// 各スターの取得数を配列で格納し表示します。
-	FontRender m_scoreOfRankFontRenderList[3];							// ランキング（1位、2位、3位）のスコアを配列で格納し表示します。
-
-	/// <summary>
-	/// スターの獲得数を表示するための構造体。
-	/// </summary>
-	struct FontOption
-	{
-		int data = 0;		// 表示する変数。
-		float pos_x = 0.0f;	// x座標。
-		float pos_y = 0.0f;	// y座標。
-		float scale = 0.0f;	// サイズ。
-		Vector4 textColor;	// 色。
-	};
+	FontRender m_gotStarCountFontRenderList[enStarKinds_Num];				// 各スターの取得数を配列で格納し表示します。
+	FontRender m_scoreOfRankFontRenderList[enRanking_Num];				// ランキング（1位、2位、3位）のスコアを配列で格納し表示します。
 
 	float m_timerToResult = 0.0f;	// FINISHからリザルトに切り替わるまでの時間を格納します。
 

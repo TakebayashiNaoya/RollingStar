@@ -2,6 +2,7 @@
 #include "CountDown.h"
 #include "SoundManager.h"
 #include "Game.h"
+#include "SpriteManager.h"
 
 namespace
 {
@@ -9,24 +10,17 @@ namespace
 	{
 		const float targetTime;
 		SpriteRender* spriteRender;
-
-		CountDownData(const float time, SpriteRender* render)
-			: targetTime(time)
-			, spriteRender(render)
-		{
-		}
 	};
 }
 
 CountDown::CountDown()
 {
-	// カウントダウンの画像を初期化します。
-	m_countThreeSpriteRender.Init("Assets/sprite/count3.dds", 1920.0f, 1080.0f);
-	m_countTwoSpriteRender.Init("Assets/sprite/count2.dds", 1920.0f, 1080.0f);
-	m_countOneSpriteRender.Init("Assets/sprite/count1.dds", 1920.0f, 1080.0f);
-	m_countStartSpriteRender.Init("Assets/sprite/countStart.dds", 1920.0f, 1080.0f);
+	SpriteManager* spriteManager = FindGO<SpriteManager>("spritemanager");
 
-	m_spriteRender = &m_countThreeSpriteRender;
+	for (int count = enCount_Three; count < enCount_Num; count++)
+	{
+		spriteManager->SpriteInit(m_countSpriteRender[count], enSpriteKinds_CountThree + count);
+	}
 }
 
 CountDown::~CountDown()
@@ -64,10 +58,10 @@ SpriteRender* CountDown::ComputeSpriteRender()
 {
 	CountDownData dataList[] =
 	{
-		CountDownData(1.0f, &m_countThreeSpriteRender),
-		CountDownData(2.0f, &m_countTwoSpriteRender),
-		CountDownData(3.0f, &m_countOneSpriteRender),
-		CountDownData(4.0f, &m_countStartSpriteRender),
+		{1.0f, &m_countSpriteRender[enCount_Three]},
+		{2.0f, &m_countSpriteRender[enCount_Two]},
+		{3.0f, &m_countSpriteRender[enCount_One]},
+		{4.0f, &m_countSpriteRender[enCount_Start]},
 	};
 
 	for (CountDownData& data : dataList)

@@ -88,10 +88,10 @@ bool Game::Start()
 		// ロード2/6を描画します。
 		m_loadingView->showLoadingPhases[LoadingView::EnLoadingPhase::enLoadingPhase_Second] = true;
 
-		m_gameNewGOType = EnGameNewGOType_Step2;
+		m_gameNewGOType = enGameNewGOType_Step2;
 		return false;
 	}
-	case EnGameNewGOType_Step2:
+	case enGameNewGOType_Step2:
 	{
 		// 全てのレベルオブジェクトを初期化し終わったらbreakします。
 		if (m_objDataListIndex < m_levelObjectDataList.size())

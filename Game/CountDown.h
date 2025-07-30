@@ -6,6 +6,19 @@ class Game;
 
 class CountDown :public IGameObject
 {
+private:
+	/// <summary>
+	/// カウントダウンの各段階を表す列挙型です。
+	/// </summary>
+	enum EnCount
+	{
+		enCount_Three,	// 「3」。
+		enCount_Two,	// 「2」。
+		enCount_One,	// 「1」。
+		enCount_Start,	// 「START」。
+		enCount_Num
+	};
+
 public:
 	CountDown();
 	~CountDown();
@@ -21,14 +34,11 @@ private:
 	/// <returns>計算された SpriteRender オブジェクトへのポインタ。</returns>
 	SpriteRender* ComputeSpriteRender();
 
-	Game* m_game = nullptr;					// Game型のポインタ。
-	SpriteRender* m_spriteRender = nullptr;	// SpriteRender型のポインタ。
+	Game* m_game = nullptr;							// Game型のポインタ。
+	SpriteRender* m_spriteRender = nullptr;			// SpriteRender型のポインタ。
 
-	SpriteRender m_countThreeSpriteRender;		//「3」と表示するためのSpriteRenderインスタンス。
-	SpriteRender m_countTwoSpriteRender;		//「2」と表示するためのSpriteRenderインスタンス。
-	SpriteRender m_countOneSpriteRender;		//「1」と表示するためのSpriteRenderインスタンス。
-	SpriteRender m_countStartSpriteRender;	//「START」と表示するためのSpriteRenderインスタンス。
+	SpriteRender m_countSpriteRender[enCount_Num];	// enCount_Num 個の SpriteRender オブジェクトを格納する配列です。
 
-	float countDown = 0.0f;					// SpriteRenderを切り替える時間を計測するための変数。
+	float countDown = 0.0f;							// SpriteRenderを切り替える時間を計測するための変数。
 };
 

@@ -14,7 +14,7 @@ enum EnStarKinds
 	enStarKinds_Blue,	// ブルースター。
 	enStarKinds_Green,	// グリーンスター。
 	enStarKinds_Normal,	// ノーマルスター。
-	StarKinds_Num
+	enStarKinds_Num
 };
 
 /// <summary>

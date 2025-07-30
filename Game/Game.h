@@ -19,11 +19,14 @@ class Transform;
 class Game : public IGameObject
 {
 private:
+	/// <summary>
+	/// ゲームオブジェクトの生成段階を表す列挙型です。
+	/// </summary>
 	enum EnGameNewGOType
 	{
 		enGameNewGOType_Init,		// 何かしら初期化をします。１回だけ呼び出いものを最初に呼ぶ。
 		enGameNewGOType_Step1,		// Playerなど数が多くないものをNewGOします。数が増えたら分割してください。
-		EnGameNewGOType_Step2,		// StarなどLevelで大量に配置しているオブジェクトをNewGOします。ここで複数回分割を行います。
+		enGameNewGOType_Step2,		// StarなどLevelで大量に配置しているオブジェクトをNewGOします。ここで複数回分割を行います。
 	};
 
 public:
@@ -34,7 +37,7 @@ public:
 	/// ゲーム開始フラグの状態を取得します。
 	/// </summary>
 	/// <returns>ゲームが開始されている場合は true、そうでない場合は false を返します。</returns>
-	bool GetGameStartFlag()
+	bool GetGameStartFlag()const
 	{
 		return m_isGameStartFlag;
 	}
@@ -52,7 +55,7 @@ public:
 	/// ゲーム終了フラグの状態を取得します。
 	/// </summary>
 	/// <returns>ゲームが終了している場合は true、そうでない場合は false を返します。</returns>
-	bool GetGameEndFlag()
+	bool GetGameEndFlag()const
 	{
 		return  m_isGameEndFlag;
 	}

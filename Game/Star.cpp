@@ -10,14 +10,56 @@
 
 namespace
 {
-	const float GET_STAR_LENGTH = 200.0f;
+	const float GET_STAR_LENGTH = 200.0f;	// スターを消滅させるプレイヤーとの距離。
+	const float ROTATION_SPEED = 5.0f;		// スターの自転速度。
 
-	const int PERCENT_SCALE = 100;
-	const int COLOR_PROBABILITY_RED = 1;
-	const int COLOR_PROBABILITY_ORANGE = 5;
-	const int COLOR_PROBABILITY_PURPLE = 10;
-	const int COLOR_PROBABILITY_BLUE = 15;
-	const int COLOR_PROBABILITY_GREEN = 30;
+	const int PERCENT_SCALE = 100;			// 色の出現確立を計算するとき、0～99で抽選するためにこの数値を使います。
+
+	/// <summary>
+	/// スターの種類ごとの色の出現確率(%)を定義する定数配列です。
+	/// </summary>
+	const int COLOR_PROBABILITIES[enStarKinds_Num] =
+	{
+		1,		// レッドスター。
+		5,		// オレンジスター。
+		10,		// パープルスター。
+		15,		// ブルースター。
+		30,		// グリーンスター。
+		100		// ノーマルスター。
+	};
+
+	std::string MODEL_DATA_FILE_PATH = "Assets/modelData/";		// モデルデータのファイルパス。
+	std::string EXTENSION_TKM = ".tkm";							// モデルデータの拡張子。
+
+	/// <summary>
+	/// モデルデータファイルのオプションを管理する構造体です。
+	/// </summary>
+	struct ModelOption
+	{
+		std::string fileName;	// ファイルパス。
+
+		/// <summary>
+		/// ファイルのフルパスを取得します。
+		/// </summary>
+		/// <returns>MODEL_DATA_FILE_PATH と fileName を連結したファイルのフルパスを std::string 型で返します。</returns>
+		std::string GetFullPath() const
+		{
+			return MODEL_DATA_FILE_PATH + fileName + EXTENSION_TKM;
+		}
+	};
+
+	/// <summary>
+	/// スターのモデルのファイル名を定義する定数配列です。
+	/// </summary>
+	const ModelOption MODEL_LIST[] =
+	{
+		{"redStar"},
+		{"orangeStar"},
+		{"purpleStar"},
+		{"blueStar"},
+		{"greenStar"},
+		{"normalStar"}
+	};
 };
 
 bool Star::Start()
@@ -27,8 +69,8 @@ bool Star::Start()
 	m_score = FindGO<Score>("score");
 	m_game = FindGO<Game>("game");
 
-	SetStarColor();
-	StarModelInit();
+	SetupStarColor();
+	m_modelRender.Init(MODEL_LIST[m_starColor].GetFullPath().c_str());
 
 	return true;
 }
@@ -39,7 +81,7 @@ void Star::Update()
 	Rotation();
 	m_modelRender.Update();
 
-	GetStar();
+	StarGet();
 }
 
 void Star::Render(RenderContext& rc)
@@ -47,47 +89,21 @@ void Star::Render(RenderContext& rc)
 	m_modelRender.Draw(rc);
 }
 
-
-///////////////////////////////////////////////////////////////////
-// ここからメソッドまとめ。
-///////////////////////////////////////////////////////////////////
-
-void Star::SetStarColor()
+void Star::SetupStarColor()
 {
-	if (rand() % PERCENT_SCALE < COLOR_PROBABILITY_RED) { m_starColor = enStarKinds_Red; }
-	else if (rand() % PERCENT_SCALE < COLOR_PROBABILITY_ORANGE) { m_starColor = enStarKinds_Orange; }
-	else if (rand() % PERCENT_SCALE < COLOR_PROBABILITY_PURPLE) { m_starColor = enStarKinds_Purple; }
-	else if (rand() % PERCENT_SCALE < COLOR_PROBABILITY_BLUE) { m_starColor = enStarKinds_Blue; }
-	else if (rand() % PERCENT_SCALE < COLOR_PROBABILITY_GREEN) { m_starColor = enStarKinds_Green; }
-	else { m_starColor = enStarKinds_Normal; }
-}
+	const int rnd = rand() % PERCENT_SCALE;
 
-void Star::StarModelInit()
-{
-	switch (m_starColor)
+	for (int starKind = 0; starKind < enStarKinds_Num; starKind++)
 	{
-	case enStarKinds_Red:
-		m_modelRender.Init("Assets/modelData/redStar.tkm");
-		break;
-	case enStarKinds_Orange:
-		m_modelRender.Init("Assets/modelData/orangeStar.tkm");
-		break;
-	case enStarKinds_Purple:
-		m_modelRender.Init("Assets/modelData/purpleStar.tkm");
-		break;
-	case enStarKinds_Blue:
-		m_modelRender.Init("Assets/modelData/blueStar.tkm");
-		break;
-	case enStarKinds_Green:
-		m_modelRender.Init("Assets/modelData/greenStar.tkm");
-		break;
-	case enStarKinds_Normal:
-		m_modelRender.Init("Assets/modelData/star.tkm");
-		break;
+		if (rnd < COLOR_PROBABILITIES[starKind])
+		{
+			m_starColor = starKind;
+			break;
+		}
 	}
 }
 
-void Star::GetStar()
+void Star::StarGet()
 {
 	Vector3 diff = m_transform->m_position - m_player->GetPosition();
 
@@ -110,7 +126,7 @@ void Star::GetStar()
 
 void Star::Rotation()
 {
-	m_rotation.AddRotationDegY(5.0f);
+	m_rotation.AddRotationDegY(ROTATION_SPEED);
 	m_modelRender.SetRotation(m_rotation);
 }
 
