@@ -35,6 +35,11 @@ private:
 	void Render(RenderContext& rc)override final;
 
 	/// <summary>
+	/// アニメーションクリップを設定します。
+	/// </summary>
+	void SetAnimationClips();
+
+	/// <summary>
 	/// 移動処理。
 	/// </summary>
 	void Move();

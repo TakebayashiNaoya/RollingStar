@@ -10,7 +10,7 @@ public:
 	/// 他のクラスでtrueにして、スコアをポップさせる合図を出します。
 	/// </summary>
 	/// <param name="a">設定するフラグの値（true または false）。</param>
-	const void SetPopFlag(bool a)
+	void SetPopFlag(bool a)
 	{
 		isPopFlag = a;
 	}
@@ -19,7 +19,7 @@ public:
 	/// Starクラスから、消滅したスターの色を取得します。
 	/// </summary>
 	/// <returns>colorChecker の現在の値を返します。</returns>
-	const int GetColorChecker()
+	int GetColorChecker()const
 	{
 		return colorChecker;
 	}
@@ -28,7 +28,7 @@ public:
 	/// スタークラスから消滅したスターの色を受け取ります。
 	/// </summary>
 	/// <param name="a">設定する colorChecker の値。</param>
-	const void SetColorChecker(int a)
+	void SetColorChecker(int a)
 	{
 		colorChecker = a;
 	}

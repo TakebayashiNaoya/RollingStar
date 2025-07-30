@@ -2,6 +2,7 @@
 #include "Tutorial.h"
 #include "SoundManager.h"
 #include "CountDown.h"
+#include "SpriteManager.h"
 
 Tutorial::~Tutorial()
 {
@@ -10,7 +11,8 @@ Tutorial::~Tutorial()
 
 bool Tutorial::Start()
 {
-	m_spriteRender.Init("Assets/sprite/tutorial.dds", 1280.0f, 900.0f);
+	SpriteManager* spriteManager = FindGO<SpriteManager>("spritemanager");
+	spriteManager->SpriteInit(m_tutorialSpriteRender, enSpriteKinds_Tutorial);
 
 	return true;
 }
@@ -28,5 +30,5 @@ void Tutorial::Update()
 
 void Tutorial::Render(RenderContext& rc)
 {
-	m_spriteRender.Draw(rc);
+	m_tutorialSpriteRender.Draw(rc);
 }

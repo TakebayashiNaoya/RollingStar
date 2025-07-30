@@ -17,7 +17,7 @@ public:
 	/// m_transform メンバーへのポインタを取得します。
 	/// </summary>
 	/// <returns>Transform 型のポインタ。m_transform メンバーへのポインタを返します。</returns>
-	Transform* GetTransform()
+	Transform* GetTransform()const
 	{
 		return m_transform;
 	}

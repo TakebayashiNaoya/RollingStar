@@ -8,19 +8,19 @@ class Game;
 class GameTimer :public IGameObject
 {
 public:
-	bool Start() override final;
-	void Update() override final;
-	void Render(RenderContext& rc) override final;
-
 	/// <summary>
 	/// 制限時間を取得します。
 	/// </summary>
-	float GetTimeLimit()
+	float GetTimeLimit()const
 	{
 		return m_timeLimit;
 	}
 
 private:
+	bool Start() override final;
+	void Update() override final;
+	void Render(RenderContext& rc) override final;
+
 	Game* m_game = nullptr;
 
 	FontRender m_timeLimitfontRender;	// 制限時間のフォントを表示するために使用します。

@@ -9,6 +9,8 @@
 
 #include "SaveData.h"
 #include "SoundManager.h"
+#include "SpriteManager.h"
+#include <time.h>
 
 
 void ReportLiveObjects()
@@ -36,10 +38,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 	// ここから初期化を行うコードを記述する。
 	//////////////////////////////////////
 
+	srand(time(nullptr));
+
 	//ワイヤーフレーム描画
 	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
 	NewGO<SoundManager>(0, "soundmanager");
+
+	NewGO<SpriteManager>(0, "spritemanager");
 
 	//セーブデータクラスのオブジェクトを作成
 	NewGO<SaveData>(0, "savedata");

@@ -29,6 +29,7 @@
     <ClCompile Include="LoadingView.cpp" />
     <ClCompile Include="SaveData.cpp" />
     <ClCompile Include="SoundManager.cpp" />
+    <ClCompile Include="SpriteManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -55,5 +56,6 @@
     <ClInclude Include="json.hpp" />
     <ClInclude Include="SaveData.h" />
     <ClInclude Include="SoundManager.h" />
+    <ClInclude Include="SpriteManager.h" />
   </ItemGroup>
 </Project>

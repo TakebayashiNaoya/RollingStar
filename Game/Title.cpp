@@ -3,6 +3,7 @@
 #include "SoundManager.h"
 #include "Game.h"
 #include "LoadingView.h"
+#include "SpriteManager.h"
 
 Title::~Title()
 {
@@ -14,7 +15,8 @@ Title::~Title()
 
 bool Title::Start()
 {
-	m_titleViewSpriteRender.Init("Assets/sprite/title.dds", 1920.0f, 1080.0f);
+	SpriteManager* spriteManager = FindGO<SpriteManager>("spritemanager");
+	spriteManager->SpriteInit(m_titleViewSpriteRender, enSpriteKinds_Title);
 
 	SoundManager* soundManager = FindGO<SoundManager>("soundmanager");
 	soundManager->SoundNewGO(enSoundList_TitleBGM);
