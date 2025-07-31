@@ -3,7 +3,8 @@
 
 namespace
 {
-	const char* SOUND_FILE_PATH = "Assets/sound/";	// サウンドのファイルパス。
+	std::string SOUND_FILE_PATH = "Assets/sound/";	// サウンドのファイルパス。
+	std::string EXTENSION_WAV = ".wav";				// サウンドの拡張子。
 
 	struct SoundOption
 	{
@@ -14,29 +15,21 @@ namespace
 		// サウンドのファイルパスと各サウンドのファイル名を結合して返す。
 		std::string GetFullPath() const
 		{
-			return std::string(SOUND_FILE_PATH) + fileName;
+			return SOUND_FILE_PATH + fileName + EXTENSION_WAV;
 		}
 	};
 
 	const SoundOption SOUND_OPTIONS[] =
 	{
-		{ "title.wav", true, 1.0f },
-		{ "inGame.wav", true, 1.0f },
-		{ "push.wav", false, 3.5f },
-		{ "countDownStart.wav", false, 3.5f },
-		{ "jump.wav", false, 3.5f },
-		{ "star.wav", false, 3.5f },
-		{ "end.wav", false, 3.5f },
-		{ "call.wav", false, 3.5f },
+		{ "title", true, 1.0f },
+		{ "inGame", true, 1.0f },
+		{ "push", false, 3.5f },
+		{ "countDownStart", false, 3.5f },
+		{ "jump", false, 3.5f },
+		{ "star", false, 3.5f },
+		{ "end", false, 3.5f },
+		{ "call", false, 3.5f },
 	};
-}
-
-SoundManager::SoundManager()
-{
-	for (int i = 0; i < enSoundList_Num; ++i)
-	{
-		sound[i] = nullptr;
-	}
 }
 
 void SoundManager::SoundNewGO(int a)
@@ -48,13 +41,14 @@ void SoundManager::SoundNewGO(int a)
 	sound[a]->SetVolume(SOUND_OPTIONS[a].volume);
 }
 
-void SoundManager::SoundDeleteGO(int a)
+void SoundManager::SoundDeleteGO(int b)
 {
-	if (a < 0 || a >= enSoundList_Num) return;
-
-	if (sound[a]) // 有効なポインタかチェック
+	/// <summary>
+	/// main.cppでNewGOされているこのクラスが消された後に、他クラスでこの関数が呼び出されるため、
+	/// このクラスが存在しない場合のみこの関数の処理を有効にする。
+	/// </summary>
+	if (this != nullptr)
 	{
-		DeleteGO(sound[a]);
-		sound[a] = nullptr; // 削除済みマーク
+		DeleteGO(sound[b]);
 	}
 }
